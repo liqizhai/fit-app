@@ -4,14 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#080A0B">
-<meta name="description" content="燃练 — 把刷到的健身视频，变成你的训练清单。教程库、组间计时、训练记录，一个 App 全搞定。">
+<meta name="description" content="燃练 — 选择常用训练动作，整理训练清单。动作库、组间计时、训练记录，一个 App 全搞定。">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<title>燃练 · 教程变训练</title>
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="icon" href="icon-192.png">
+<title>燃练 · 动作训练（单文件版）</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/space-grotesk@5.2.10/index.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/noto-sans-sc@5.2.10/index.css" rel="stylesheet">
@@ -319,6 +316,17 @@ details.help[open] summary{color:var(--accent)}
 .fab .ic{width:26px;height:26px;stroke-width:2.4}
 .fab:active{transform:scale(.94)}
 @media(max-width:478px){.fab{right:18px}}
+
+.hint{font-size:11px;color:var(--muted);line-height:1.55}
+.tut-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.catalog-card{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px}
+.catalog-card-top{display:flex;align-items:flex-start;gap:10px}
+.catalog-card-main{flex:1;min-width:0}
+.catalog-card-title{font-size:13.5px;font-weight:600;line-height:1.45}
+.catalog-card-desc{font-size:11.5px;color:var(--muted);line-height:1.55;margin-top:4px}
+.catalog-card-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.catalog-card .act{flex:0 0 auto;align-self:center}
+.catalog-card .act:disabled{opacity:.55;cursor:default}
 </style>
 </head>
 <body>
@@ -353,7 +361,7 @@ details.help[open] summary{color:var(--accent)}
         <div class="brand-sub">RepLog</div>
       </div>
     </div>
-    <button class="icon-btn" id="btnAddTop" aria-label="添加教程"><svg class="ic ic-s"><use href="#i-plus"/></svg></button>
+    <button class="icon-btn" id="btnAddTop" aria-label="添加动作"><svg class="ic ic-s"><use href="#i-plus"/></svg></button>
   </header>
 
   <main id="main">
@@ -363,7 +371,7 @@ details.help[open] summary{color:var(--accent)}
         <div>
           <div class="hero-date" id="todayDate">—</div>
           <div class="hero-title" id="heroTitle">今天的训练<br><em>准备好了吗</em></div>
-          <div class="hero-note" id="heroNote">从教程库挑几个动作加入今日</div>
+          <div class="hero-note" id="heroNote">从动作库挑几个动作加入今日</div>
         </div>
         <div class="ring">
           <svg viewBox="0 0 78 78">
@@ -379,7 +387,7 @@ details.help[open] summary{color:var(--accent)}
       <div class="stats">
         <div class="stat"><b class="num" id="stWeek">0</b><span>本周训练</span></div>
         <div class="stat"><b class="num" id="stVol">0</b><span>今日容量 kg</span></div>
-        <div class="stat"><b class="num" id="stTut">0</b><span>教程储备</span></div>
+        <div class="stat"><b class="num" id="stTut">0</b><span>动作总数</span></div>
       </div>
 
       <h2 class="sec">今日清单 <span class="muted" style="font-size:11.5px;font-weight:400" id="planCount"></span></h2>
@@ -392,12 +400,13 @@ details.help[open] summary{color:var(--accent)}
       </button>
     </section>
 
-    <!-- ============ 教程库 ============ -->
+    <!-- ============ 动作库 ============ -->
     <section class="view" id="view-library">
+      <button class="full-btn sec" id="btnOpenCatalog" style="margin:4px 0 14px"><svg class="ic ic-s"><use href="#i-plus"/></svg> 从常用动作中选择</button>
       <div class="toolbar">
         <div class="search">
           <svg class="ic ic-s"><use href="#i-search"/></svg>
-          <input id="searchInput" type="search" placeholder="搜索动作、部位或备注" autocomplete="off">
+          <input id="searchInput" type="search" placeholder="搜索动作、部位、器械或备注" autocomplete="off">
         </div>
         <div class="chips" id="partChips"></div>
       </div>
@@ -441,7 +450,7 @@ details.help[open] summary{color:var(--accent)}
     <section class="view" id="view-me">
       <div class="eyebrow" style="margin-bottom:14px">训练数据</div>
       <div class="stats" style="grid-template-columns:1fr 1fr;margin-bottom:18px">
-        <div class="stat"><b class="num" id="meTut">0</b><span>我的教程</span></div>
+        <div class="stat"><b class="num" id="meTut">0</b><span>我的动作</span></div>
         <div class="stat"><b class="num" id="meDays">0</b><span>训练天数</span></div>
         <div class="stat"><b class="num" id="meSets">0</b><span>累计组数</span></div>
         <div class="stat"><b class="num" id="meVol">0</b><span>累计容量 kg</span></div>
@@ -480,26 +489,21 @@ details.help[open] summary{color:var(--accent)}
         </div>
       </details>
       <details class="help">
-        <summary>怎么把抖音视频搬进来 <svg class="ic ic-s"><use href="#i-plus"/></svg></summary>
+        <summary>怎么使用动作库 <svg class="ic ic-s"><use href="#i-plus"/></svg></summary>
         <div class="help-body">
-          <b>一键搬运流程</b>
-          <ol>
-            <li>抖音视频页 → 分享 → <b>复制链接</b></li>
-            <li>回到燃练 → 点右上角 <b>＋</b> → 把整段分享文案粘进去</li>
-            <li>点 <b>「提取链接」</b>，链接和平台自动识别</li>
-            <li>填标题、选部位，保存 —— 教程就进库了</li>
-          </ol>
-          <b>为什么只存链接？</b><br>
-          视频版权归创作者，直接下载搬运会侵权。燃练只保存链接 + 你自己的训练笔记（组数、要点、感受），点「观看」跳回原视频，这样既合规又能长期用。
-          <br><br>
-          <b>想离线看？</b>在抖音里把视频收藏／下载到相册，再把要点写进教程备注，训练时看备注就够用了。
+          <b>添加动作</b><br>
+          在「动作库」点击「从常用动作中选择」，按热身、胸、背、腿等分类挑选动作，点「加入动作库」即可保存。也可以点击右下角「＋」手动创建自己的动作。<br><br>
+          <b>安排训练</b><br>
+          动作加入动作库后，点击「加入今日」即可排入当天训练清单；训练过程中可以记录组数、次数和重量。<br><br>
+          <b>数据保存</b><br>
+          所有动作和训练记录保存在当前设备浏览器本地。更换手机前，请先导出 JSON 备份。
         </div>
       </details>
       <details class="help">
         <summary>关于燃练 <svg class="ic ic-s"><use href="#i-plus"/></svg></summary>
         <div class="help-body">
           燃练 RepLog · v1.0<br>
-          一个只做一件事的健身工具：把你在各个平台刷到的动作教程，整理成能真正执行的训练清单。<br><br>
+          一个简洁的健身工具：从常用动作库中挑选动作，整理成能真正执行的训练清单。<br><br>
           所有数据保存在你自己的手机本地（localStorage），不上传任何服务器。换手机时用「导出／导入」搬数据。
         </div>
       </details>
@@ -508,63 +512,75 @@ details.help[open] summary{color:var(--accent)}
 
   <nav class="tabbar">
     <button class="tab on" data-view="today"><svg class="ic"><use href="#i-home"/></svg>今日</button>
-    <button class="tab" data-view="library"><svg class="ic"><use href="#i-book"/></svg>教程库</button>
+    <button class="tab" data-view="library"><svg class="ic"><use href="#i-book"/></svg>动作库</button>
     <button class="tab" data-view="timer"><svg class="ic"><use href="#i-timer"/></svg>计时</button>
     <button class="tab" data-view="me"><svg class="ic"><use href="#i-user"/></svg>我的</button>
   </nav>
 </div>
 
-<button class="fab" id="fabAdd" aria-label="添加教程"><svg class="ic"><use href="#i-plus"/></svg></button>
+<button class="fab" id="fabAdd" aria-label="添加动作"><svg class="ic"><use href="#i-plus"/></svg></button>
 
 <div class="backdrop" id="backdrop"></div>
 
-<!-- 添加教程 -->
-<div class="sheet" id="sheetAdd">
+<!-- 常用动作选择 -->
+<div class="sheet" id="sheetCatalog">
   <div class="sheet-handle"></div>
   <div class="sheet-head">
-    <h3>添加教程</h3>
+    <h3>选择常用动作</h3>
     <button class="icon-btn" data-close aria-label="关闭"><svg class="ic ic-s"><use href="#i-x"/></svg></button>
   </div>
   <div class="sheet-body">
-    <div class="field">
-      <label>分享文案 / 链接</label>
-      <textarea class="textarea" id="inPaste" placeholder="把抖音、小红书、B站的分享文案整段粘贴到这里…"></textarea>
+    <div class="search" style="margin:0 0 10px">
+      <svg class="ic ic-s"><use href="#i-search"/></svg>
+      <input id="catalogSearch" type="search" placeholder="搜索动作名称、部位或器械" autocomplete="off">
     </div>
-    <div class="paste-box">
-      <svg class="ic ic-s"><use href="#i-link"/></svg>
-      <p>自动识别平台与视频链接</p>
-      <button class="act primary" id="btnExtract">提取链接</button>
-    </div>
+    <div class="chips" id="catalogChips" style="margin:0 0 12px"></div>
+    <div class="hint" style="margin-bottom:10px">选择适合自己的动作，加入后可在动作库中安排今日训练。</div>
+    <div id="catalogList"></div>
+  </div>
+</div>
+
+<!-- 添加动作 -->
+<div class="sheet" id="sheetAdd">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <h3>添加动作</h3>
+    <button class="icon-btn" data-close aria-label="关闭"><svg class="ic ic-s"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="sheet-body">
+    <div class="hint" style="margin:0 0 14px">创建自己的训练动作。常用动作可在动作库中直接选择添加。</div>
     <div class="field">
       <label>动作名称</label>
-      <input class="input" id="inTitle" placeholder="例：杠铃深蹲 · 膝盖导向版">
+      <input class="input" id="inTitle" placeholder="例：哑铃上斜卧推">
     </div>
     <div class="grid2">
       <div class="field">
         <label>训练部位</label>
         <select class="select" id="inPart">
-          <option value="胸">胸</option><option value="背">背</option><option value="腿">腿</option>
-          <option value="臀">臀</option><option value="肩">肩</option><option value="手臂">手臂</option>
-          <option value="核心">核心</option><option value="全身">全身</option>
+          <option value="热身">热身</option><option value="胸">胸</option><option value="背">背</option>
+          <option value="腿">腿</option><option value="臀">臀</option><option value="肩">肩</option>
+          <option value="手臂">手臂</option><option value="核心">核心</option><option value="有氧">有氧</option><option value="全身">全身</option>
         </select>
       </div>
-      <div class="field">
-        <label>平台</label>
-        <select class="select" id="inPlatform">
-          <option value="抖音">抖音</option><option value="小红书">小红书</option>
-          <option value="B站">B站</option><option value="YouTube">YouTube</option><option value="其他">其他</option>
+      <div class="field"><label>训练器械</label>
+        <select class="select" id="inEquipment">
+          <option value="自重">自重</option><option value="哑铃">哑铃</option><option value="杠铃">杠铃</option>
+          <option value="固定器械">固定器械</option><option value="龙门架/绳索">龙门架/绳索</option>
+          <option value="壶铃">壶铃</option><option value="弹力带">弹力带</option><option value="其他/不确定">其他/不确定</option>
         </select>
       </div>
     </div>
-    <div class="field">
-      <label>视频链接</label>
-      <input class="input" id="inUrl" placeholder="https://…" inputmode="url">
+    <div class="field"><label>动作类型</label>
+      <select class="select" id="inType"><option value="复合动作">复合动作</option><option value="孤立动作">孤立动作</option><option value="有氧/体能">有氧/体能</option><option value="拉伸/活动度">拉伸/活动度</option></select>
+    </div>
+    <div class="field"><label>动作要领 / 注意事项</label>
+      <textarea class="textarea" id="inGuide" placeholder="填写动作姿势、发力方式和注意事项"></textarea>
     </div>
     <div class="field">
       <label>训练备注（组数 / 要点 / 重量）</label>
-      <textarea class="textarea" id="inNote" placeholder="例：4 组 × 8 次，膝盖别内扣，重量 60kg 起步"></textarea>
+      <textarea class="textarea" id="inNote" placeholder="例：3 组 × 10 次，动作稳定后再增加重量"></textarea>
     </div>
-    <button class="full-btn" id="btnSaveTut"><svg class="ic ic-s"><use href="#i-check"/></svg> 保存到教程库</button>
+    <button class="full-btn" id="btnSaveTut"><svg class="ic ic-s"><use href="#i-check"/></svg> 保存到动作库</button>
   </div>
 </div>
 
@@ -596,8 +612,8 @@ details.help[open] summary{color:var(--accent)}
 (function(){
   "use strict";
   var KEY = "ranlian.v1";
-  var PARTS = ["胸","背","腿","臀","肩","手臂","核心","全身"];
-  var HUE = {胸:8, 背:210, 腿:142, 臀:320, 肩:45, 手臂:275, 核心:185, 全身:95};
+  var PARTS = ["热身","胸","背","腿","臀","肩","手臂","核心","有氧","全身"];
+  var HUE = {热身:35, 胸:8, 背:210, 腿:142, 臀:320, 肩:45, 手臂:275, 核心:185, 有氧:165, 全身:95};
 
   /* ---------- state ---------- */
   var db = load();
@@ -666,7 +682,7 @@ details.help[open] summary{color:var(--accent)}
 
   /* ---------- sheets ---------- */
   var backdrop = document.getElementById("backdrop");
-  var sheets = { add: document.getElementById("sheetAdd"), log: document.getElementById("sheetLog") };
+  var sheets = { add: document.getElementById("sheetAdd"), catalog: document.getElementById("sheetCatalog"), log: document.getElementById("sheetLog") };
   var openSheet = null;
   function show(name){
     hide();
@@ -728,12 +744,12 @@ details.help[open] summary{color:var(--accent)}
       heroNote.textContent = finished ? "已完成 "+finished+" / "+tuts.length+"，继续保持" : "完成 "+tuts.length+" 个动作，练完打卡";
     }else{
       heroTitle.innerHTML = "今天的训练<br><em>准备好了吗</em>";
-      heroNote.textContent = "从教程库挑几个动作加入今日";
+      heroNote.textContent = "从动作库挑几个动作加入今日";
     }
 
     var box = document.getElementById("planList");
     if(!tuts.length){
-      box.innerHTML = '<div class="empty"><strong>今日清单还是空的</strong>去「教程库」点「加入今日」，把收藏的动作排进今天的训练</div>';
+      box.innerHTML = '<div class="empty"><strong>今日清单还是空的</strong>去「动作库」点「加入今日」，把收藏的动作排进今天的训练</div>';
     }else{
       var doneList = db.done[TODAY] || [];
       box.innerHTML = tuts.map(function(t){
@@ -742,7 +758,7 @@ details.help[open] summary{color:var(--accent)}
           + '<button class="check" data-check="'+t.id+'" aria-label="完成"><svg class="ic"><use href="#i-check"/></svg></button>'
           + '<div class="p-main"><div class="p-name">'+esc(t.title)+'</div>'
           + '<div class="p-meta"><span class="tag" style="--h:'+(HUE[t.part]||90)+'">'+esc(t.part)+'</span>'
-          + '<span class="tag plain">'+esc(t.platform)+'</span>'
+          + (t.equipment ? '<span class="tag plain">'+esc(t.equipment)+'</span>' : '')
           + (t.note ? '<span class="muted" style="font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px">'+esc(t.note)+'</span>' : '')
           + '</div></div>'
           + '<div class="p-actions">'
@@ -766,7 +782,7 @@ details.help[open] summary{color:var(--accent)}
       + '</div>';
   }
 
-  /* ---------- 教程库 ---------- */
+  /* ---------- 动作库 ---------- */
   var filterPart = "全部", keyword = "";
   function renderChips(){
     var list = ["全部"].concat(PARTS);
@@ -779,13 +795,13 @@ details.help[open] summary{color:var(--accent)}
     var list = db.tutorials.filter(function(t){
       var okPart = filterPart==="全部" || t.part===filterPart;
       var k = keyword.trim().toLowerCase();
-      var okKey = !k || (t.title+" "+t.part+" "+t.platform+" "+(t.note||"")).toLowerCase().indexOf(k)>=0;
+      var okKey = !k || (t.title+" "+t.part+" "+t.platform+" "+(t.equipment||"")+" "+(t.type||"")+" "+(t.guide||"")+" "+(t.note||"")).toLowerCase().indexOf(k)>=0;
       return okPart && okKey;
     });
     var box = document.getElementById("tutList");
     if(!list.length){
-      box.innerHTML = '<div class="empty"><strong>'+(db.tutorials.length? "没有匹配的教程":"教程库还是空的")+'</strong>'
-        + '点右上角或右下角 ＋，把抖音、小红书刷到的动作视频存进来</div>';
+      box.innerHTML = '<div class="empty"><strong>'+(db.tutorials.length? "没有匹配的动作":"动作库还是空的")+'</strong>'
+        + '点击上方「从常用动作中选择」，按分类挑选动作加入自己的动作库</div>';
       return;
     }
     box.innerHTML = list.slice().reverse().map(function(t){
@@ -794,8 +810,10 @@ details.help[open] summary{color:var(--accent)}
         + '<div class="tut-top"><div class="tut-title">'+esc(t.title)+'</div>'
         + '<div style="display:flex;gap:6px;flex:0 0 auto">'
         + '<span class="tag" style="--h:'+(HUE[t.part]||90)+'">'+esc(t.part)+'</span>'
-        + '<span class="tag plain">'+esc(t.platform)+'</span></div></div>'
-        + (t.note ? '<div class="tut-note">'+esc(t.note)+'</div>' : '')
+        + '</div></div>'
+        + '<div class="tut-meta">'+(t.equipment?'<span class="tag plain">器械：'+esc(t.equipment)+'</span>':'')+(t.type?'<span class="tag plain">'+esc(t.type)+'</span>':'')+'</div>'
+        + (t.guide ? '<div class="tut-note">要领：'+esc(t.guide)+'</div>' : '')
+        + (t.note ? '<div class="tut-note">备注：'+esc(t.note)+'</div>' : '')
         + '<div class="tut-foot">'
         + '<button class="act '+(inPlan?"":"primary")+'" data-addplan="'+t.id+'">'
         + (inPlan ? '<svg class="ic"><use href="#i-check"/></svg> 已在今日' : '<svg class="ic"><use href="#i-plus"/></svg> 加入今日')+'</button>'
@@ -914,71 +932,129 @@ details.help[open] summary{color:var(--accent)}
       Math.round(db.logs.reduce(function(a,l){ return a + l.sets*l.reps*l.weight; },0));
   }
 
-  /* ---------- 添加教程 ---------- */
-  var inPaste = document.getElementById("inPaste"), inTitle = document.getElementById("inTitle"),
-      inUrl = document.getElementById("inUrl"), inNote = document.getElementById("inNote"),
-      inPart = document.getElementById("inPart"), inPlatform = document.getElementById("inPlatform");
-  function detect(url){
-    if(!url) return null;
-    if(/douyin\.com|iesdouyin|v\.douyin/i.test(url)) return "抖音";
-    if(/xiaohongshu|xhslink/i.test(url)) return "小红书";
-    if(/bilibili|b23\.tv/i.test(url)) return "B站";
-    if(/youtube|youtu\.be/i.test(url)) return "YouTube";
-    return "其他";
+  /* ---------- 常用动作库 ---------- */
+  var CATALOG = [
+    // 热身 / 动态活动
+    {id:"w01",title:"开合跳",part:"热身",equipment:"自重",type:"有氧/体能",guide:"双脚开合与双臂上举同步进行，落地轻缓，保持自然呼吸。",note:"建议：30–45秒"},
+    {id:"w02",title:"原地慢跑",part:"热身",equipment:"自重",type:"有氧/体能",guide:"小步幅轻松跑动，身体自然直立，逐渐提高心率。",note:"建议：1–2分钟"},
+    {id:"w03",title:"高抬腿",part:"热身",equipment:"自重",type:"有氧/体能",guide:"交替抬膝至舒适高度，核心收紧，避免身体大幅后仰。",note:"建议：20–30秒"},
+    {id:"w04",title:"后踢腿跑",part:"热身",equipment:"自重",type:"有氧/体能",guide:"原地交替屈膝向后抬脚跟，动作轻快，避免用力甩腿。",note:"建议：20–30秒"},
+    {id:"w05",title:"原地小碎步",part:"热身",equipment:"自重",type:"有氧/体能",guide:"前脚掌轻触地面快速交替，膝踝放松，保持稳定节奏。",note:"建议：20–30秒"},
+    {id:"w06",title:"徒手深蹲",part:"热身",equipment:"自重",type:"复合动作",guide:"髋部向后下方移动，膝盖跟随脚尖方向，脚掌稳定踩地。",note:"建议：10–15次"},
+    {id:"w07",title:"交替弓步转体",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"向前迈步进入弓步，躯干缓慢向前腿一侧转动，左右交替。",note:"建议：每侧6–8次"},
+    {id:"w08",title:"前后摆腿",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"扶稳支撑物，单腿前后自然摆动，幅度逐渐增加，不要甩动。",note:"建议：每侧10–15次"},
+    {id:"w09",title:"左右摆腿",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"扶稳支撑物，单腿在身体前方左右摆动，骨盆保持稳定。",note:"建议：每侧10–15次"},
+    {id:"w10",title:"髋关节绕环",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"单膝抬起，缓慢向外画圈，再向内画圈，保持躯干稳定。",note:"建议：每侧8–10圈"},
+    {id:"w11",title:"踝关节绕环",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"抬起一侧脚尖，脚踝缓慢顺时针、逆时针画圈。",note:"建议：每侧各10圈"},
+    {id:"w12",title:"肩部绕环",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"双肩向前、向上、向后缓慢绕环，避免耸肩过度。",note:"建议：前后各10圈"},
+    {id:"w13",title:"手臂画圈",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"双臂侧平举，小幅到大幅画圈，前后方向交替。",note:"建议：前后各15–20秒"},
+    {id:"w14",title:"扩胸运动",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"双臂向两侧打开再自然合拢，胸部打开，避免腰部过度反弓。",note:"建议：12–15次"},
+    {id:"w15",title:"猫牛式",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"四点跪姿，呼气拱背、吸气温和伸展脊柱，动作跟随呼吸。",note:"建议：8–12次"},
+    {id:"w16",title:"胸椎旋转",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"侧卧屈膝或四点跪姿，胸椎缓慢旋转，骨盆尽量保持稳定。",note:"建议：每侧8–10次"},
+    {id:"w17",title:"臀桥激活",part:"热身",equipment:"自重",type:"复合动作",guide:"仰卧屈膝，收紧臀部抬起髋部，避免腰部过度顶起。",note:"建议：12–15次"},
+    {id:"w18",title:"弹力带侧向走",part:"热身",equipment:"弹力带",type:"复合动作",guide:"弹力带置于膝上或脚踝，微屈髋膝，小步侧向移动，膝盖对齐脚尖。",note:"建议：每侧8–12步"},
+    {id:"w19",title:"肩胛俯卧撑",part:"热身",equipment:"自重",type:"复合动作",guide:"手臂伸直，通过肩胛骨前伸与回收完成动作，肘部保持伸直。",note:"建议：10–12次"},
+    {id:"w20",title:"动态提踵",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"双脚与髋同宽，缓慢踮起脚跟再控制下放，感受小腿发力。",note:"建议：15–20次"},
+    // 胸部
+    {id:"c01",title:"标准俯卧撑",part:"胸",equipment:"自重",type:"复合动作",guide:"身体保持一条直线，双手略宽于肩，屈肘下降后推起。",note:"建议：3组 × 8–15次"},
+    {id:"c02",title:"跪姿俯卧撑",part:"胸",equipment:"自重",type:"复合动作",guide:"膝盖着地，核心收紧，肩髋膝保持稳定，胸部靠近地面。",note:"建议：3组 × 8–12次"},
+    {id:"c03",title:"哑铃平板卧推",part:"胸",equipment:"哑铃",type:"复合动作",guide:"肩胛后缩下沉，手腕保持中立，哑铃沿稳定轨迹推起。",note:"建议：3–4组 × 8–12次"},
+    {id:"c04",title:"杠铃卧推",part:"胸",equipment:"杠铃",type:"复合动作",guide:"肩胛稳定，双脚踩实，杠铃控制下降至胸部附近后推起。",note:"建议：3–4组 × 6–10次"},
+    {id:"c05",title:"上斜哑铃卧推",part:"胸",equipment:"哑铃",type:"复合动作",guide:"凳面保持适度上斜，肩胛稳定，哑铃向上向内推起。",note:"建议：3组 × 8–12次"},
+    {id:"c06",title:"哑铃飞鸟",part:"胸",equipment:"哑铃",type:"孤立动作",guide:"肘部微屈，沿弧线打开双臂，感受胸部拉伸后合拢。",note:"建议：3组 × 10–15次"},
+    {id:"c07",title:"绳索夹胸",part:"胸",equipment:"龙门架/绳索",type:"孤立动作",guide:"身体微前倾，肘部微屈，双手在胸前汇合并控制回程。",note:"建议：3组 × 12–15次"},
+    {id:"c08",title:"双杠臂屈伸（胸部倾向）",part:"胸",equipment:"自重",type:"复合动作",guide:"身体略前倾，屈肘缓慢下降，在肩部舒适范围内推起。",note:"建议：3组 × 6–12次"},
+    // 背部
+    {id:"b01",title:"引体向上",part:"背",equipment:"自重",type:"复合动作",guide:"先沉肩再屈肘拉起，避免摆动借力，控制身体下降。",note:"建议：3组 × 5–10次"},
+    {id:"b02",title:"高位下拉",part:"背",equipment:"固定器械",type:"复合动作",guide:"肩胛先下沉，肘部向下拉向身体两侧，避免后仰借力。",note:"建议：3–4组 × 8–12次"},
+    {id:"b03",title:"坐姿绳索划船",part:"背",equipment:"龙门架/绳索",type:"复合动作",guide:"躯干保持稳定，肩胛后收，肘部向后拉，缓慢还原。",note:"建议：3组 × 10–12次"},
+    {id:"b04",title:"单臂哑铃划船",part:"背",equipment:"哑铃",type:"复合动作",guide:"一手支撑，背部保持平稳，肘部沿身体侧后方拉起。",note:"建议：3组 × 每侧8–12次"},
+    {id:"b05",title:"杠铃俯身划船",part:"背",equipment:"杠铃",type:"复合动作",guide:"髋部后移俯身，脊柱中立，杠铃拉向下腹部。",note:"建议：3组 × 8–10次"},
+    {id:"b06",title:"直臂下压",part:"背",equipment:"龙门架/绳索",type:"孤立动作",guide:"手臂微屈固定，肩胛下沉，以背阔肌带动绳索下压。",note:"建议：3组 × 12–15次"},
+    {id:"b07",title:"反向飞鸟",part:"背",equipment:"哑铃",type:"孤立动作",guide:"髋部后移俯身，双臂向两侧打开，避免耸肩和甩动。",note:"建议：3组 × 12–15次"},
+    {id:"b08",title:"辅助引体向上",part:"背",equipment:"固定器械",type:"复合动作",guide:"控制肩胛下沉，借助辅助重量完成完整、稳定的拉起。",note:"建议：3组 × 6–10次"},
+    // 腿部
+    {id:"l01",title:"徒手深蹲",part:"腿",equipment:"自重",type:"复合动作",guide:"髋膝同时弯曲，膝盖朝向脚尖，脚掌三点稳定支撑。",note:"建议：3组 × 12–15次"},
+    {id:"l02",title:"杠铃深蹲",part:"腿",equipment:"杠铃",type:"复合动作",guide:"杠铃稳定放置，核心收紧，髋膝协调下蹲，保持脊柱中立。",note:"建议：3–4组 × 6–10次"},
+    {id:"l03",title:"高脚杯深蹲",part:"腿",equipment:"哑铃",type:"复合动作",guide:"哑铃靠近胸前，肘部向下，保持躯干稳定完成深蹲。",note:"建议：3组 × 10–12次"},
+    {id:"l04",title:"腿举",part:"腿",equipment:"固定器械",type:"复合动作",guide:"腰背贴靠靠垫，膝盖沿脚尖方向屈伸，不要锁死膝关节。",note:"建议：3组 × 10–12次"},
+    {id:"l05",title:"腿屈伸",part:"腿",equipment:"固定器械",type:"孤立动作",guide:"膝关节对准器械转轴，控制抬起与下放，不甩动。",note:"建议：3组 × 12–15次"},
+    {id:"l06",title:"俯卧腿弯举",part:"腿",equipment:"固定器械",type:"孤立动作",guide:"髋部贴稳垫面，屈膝卷起，缓慢控制回程。",note:"建议：3组 × 10–15次"},
+    {id:"l07",title:"罗马尼亚硬拉",part:"腿",equipment:"杠铃",type:"复合动作",guide:"膝盖微屈，髋部向后推，杠铃贴近腿部，保持背部中立。",note:"建议：3组 × 8–10次"},
+    {id:"l08",title:"保加利亚分腿蹲",part:"腿",equipment:"自重",type:"复合动作",guide:"后脚抬高，前脚踩稳，身体平稳下降，前膝跟随脚尖方向。",note:"建议：3组 × 每侧8–10次"},
+    {id:"l09",title:"站姿提踵",part:"腿",equipment:"固定器械",type:"孤立动作",guide:"脚掌前部支撑，脚跟充分下沉再踮起，控制动作幅度。",note:"建议：3组 × 12–20次"},
+    // 臀部
+    {id:"g01",title:"臀桥",part:"臀",equipment:"自重",type:"复合动作",guide:"脚跟踩地，收紧臀部抬髋，顶端避免腰椎过度伸展。",note:"建议：3组 × 12–15次"},
+    {id:"g02",title:"杠铃臀推",part:"臀",equipment:"杠铃",type:"复合动作",guide:"肩背靠凳，髋部向上推至躯干接近水平，顶端收紧臀部。",note:"建议：3–4组 × 8–12次"},
+    {id:"g03",title:"绳索后踢腿",part:"臀",equipment:"龙门架/绳索",type:"孤立动作",guide:"骨盆保持稳定，髋关节向后伸展，不用腰部代偿。",note:"建议：3组 × 每侧12–15次"},
+    {id:"g04",title:"蚌式开合",part:"臀",equipment:"弹力带",type:"孤立动作",guide:"侧卧屈膝，脚跟并拢，打开上侧膝盖，骨盆不要向后翻。",note:"建议：3组 × 每侧12–15次"},
+    {id:"g05",title:"髋外展",part:"臀",equipment:"固定器械",type:"孤立动作",guide:"背部贴稳靠垫，双腿向外打开，控制回程，不借助惯性。",note:"建议：3组 × 12–15次"},
+    // 肩部
+    {id:"s01",title:"哑铃肩推",part:"肩",equipment:"哑铃",type:"复合动作",guide:"核心收紧，哑铃从肩部上推，避免腰部过度反弓。",note:"建议：3组 × 8–12次"},
+    {id:"s02",title:"杠铃推举",part:"肩",equipment:"杠铃",type:"复合动作",guide:"收紧臀腹，杠铃沿面部前方垂直推起，避免耸肩代偿。",note:"建议：3组 × 6–10次"},
+    {id:"s03",title:"哑铃侧平举",part:"肩",equipment:"哑铃",type:"孤立动作",guide:"肘部微屈，手臂向身体两侧抬起至舒适高度，控制下放。",note:"建议：3组 × 12–15次"},
+    {id:"s04",title:"哑铃前平举",part:"肩",equipment:"哑铃",type:"孤立动作",guide:"躯干稳定，双臂交替或同时前举，避免身体后仰借力。",note:"建议：3组 × 10–12次"},
+    {id:"s05",title:"面拉",part:"肩",equipment:"龙门架/绳索",type:"孤立动作",guide:"绳索拉向面部，肘部向外打开，肩胛稳定，避免耸肩。",note:"建议：3组 × 12–15次"},
+    {id:"s06",title:"反向蝴蝶机",part:"肩",equipment:"固定器械",type:"孤立动作",guide:"胸部贴靠垫面，双臂向后打开，控制回程。",note:"建议：3组 × 12–15次"},
+    // 手臂
+    {id:"a01",title:"哑铃弯举",part:"手臂",equipment:"哑铃",type:"孤立动作",guide:"上臂贴近身体，屈肘举起哑铃，避免身体摆动。",note:"建议：3组 × 10–12次"},
+    {id:"a02",title:"杠铃弯举",part:"手臂",equipment:"杠铃",type:"孤立动作",guide:"手腕保持稳定，上臂固定，控制杠铃上举和下放。",note:"建议：3组 × 8–12次"},
+    {id:"a03",title:"锤式弯举",part:"手臂",equipment:"哑铃",type:"孤立动作",guide:"掌心相对握持哑铃，上臂稳定，屈肘完成动作。",note:"建议：3组 × 10–12次"},
+    {id:"a04",title:"绳索下压",part:"手臂",equipment:"龙门架/绳索",type:"孤立动作",guide:"肘部夹紧身体两侧，向下伸肘，避免肩部前后摆动。",note:"建议：3组 × 10–15次"},
+    {id:"a05",title:"哑铃过顶臂屈伸",part:"手臂",equipment:"哑铃",type:"孤立动作",guide:"上臂靠近耳侧，屈肘下放哑铃，再伸肘举起。",note:"建议：3组 × 10–12次"},
+    {id:"a06",title:"窄距俯卧撑",part:"手臂",equipment:"自重",type:"复合动作",guide:"双手略窄于肩，肘部向后弯曲，身体保持稳定。",note:"建议：3组 × 6–12次"},
+    // 核心
+    {id:"k01",title:"平板支撑",part:"核心",equipment:"自重",type:"孤立动作",guide:"肘部位于肩下，收紧腹部和臀部，保持身体成直线。",note:"建议：3组 × 20–45秒"},
+    {id:"k02",title:"卷腹",part:"核心",equipment:"自重",type:"孤立动作",guide:"下背部贴近地面，呼气卷起上背，不要用手拉头部。",note:"建议：3组 × 12–15次"},
+    {id:"k03",title:"反向卷腹",part:"核心",equipment:"自重",type:"孤立动作",guide:"屈膝抬腿，利用腹部带动骨盆轻微卷起，控制下放。",note:"建议：3组 × 10–15次"},
+    {id:"k04",title:"死虫式",part:"核心",equipment:"自重",type:"复合动作",guide:"仰卧保持腰背稳定，对侧手脚缓慢伸展，再交替进行。",note:"建议：3组 × 每侧8–10次"},
+    {id:"k05",title:"俄罗斯转体",part:"核心",equipment:"自重",type:"复合动作",guide:"坐姿微后倾，核心收紧，胸廓带动躯干左右旋转。",note:"建议：3组 × 每侧10–12次"},
+    {id:"k06",title:"登山跑",part:"核心",equipment:"自重",type:"有氧/体能",guide:"高位平板支撑，交替提膝向胸前，保持肩髋稳定。",note:"建议：3组 × 20–30秒"},
+    {id:"k07",title:"鸟狗式",part:"核心",equipment:"自重",type:"复合动作",guide:"四点跪姿，对侧手脚伸展，避免骨盆旋转或塌腰。",note:"建议：3组 × 每侧8–10次"},
+    {id:"k08",title:"侧平板支撑",part:"核心",equipment:"自重",type:"孤立动作",guide:"肘部位于肩下，髋部抬起，身体保持侧向直线。",note:"建议：每侧3组 × 20–40秒"},
+    // 有氧
+    {id:"r01",title:"跳绳",part:"有氧",equipment:"跳绳",type:"有氧/体能",guide:"手腕带动绳子转动，小幅弹跳，落地轻缓。",note:"建议：3组 × 1分钟"},
+    {id:"r02",title:"波比跳",part:"有氧",equipment:"自重",type:"有氧/体能",guide:"蹲下双手撑地，双脚后跳进入平板，再收腿站起；按能力调整节奏。",note:"建议：3组 × 6–10次"},
+    {id:"r03",title:"原地踏步",part:"有氧",equipment:"自重",type:"有氧/体能",guide:"自然摆臂，交替抬脚，保持平稳呼吸和适中节奏。",note:"建议：5–10分钟"},
+    {id:"r04",title:"动感单车",part:"有氧",equipment:"固定器械",type:"有氧/体能",guide:"调整座椅高度，踩踏过程膝盖保持自然轨迹，循序渐进加阻力。",note:"建议：10–20分钟"},
+    {id:"r05",title:"跑步机快走",part:"有氧",equipment:"固定器械",type:"有氧/体能",guide:"保持自然步幅和直立姿势，先低速热身再逐渐提速。",note:"建议：10–20分钟"}
+  ];
+  var catalogPart="全部", catalogKeyword="";
+  function renderCatalog(){
+    var cats=["全部","热身","胸","背","腿","臀","肩","手臂","核心","有氧"];
+    document.getElementById("catalogChips").innerHTML=cats.map(function(c){return '<button class="chip'+(catalogPart===c?' on':'')+'" data-catalog-part="'+c+'">'+c+'</button>';}).join("");
+    var list=CATALOG.filter(function(a){
+      var partOk=catalogPart==="全部"||a.part===catalogPart;
+      var key=catalogKeyword.toLowerCase().trim();
+      var keyOk=!key||(a.title+" "+a.part+" "+a.equipment+" "+a.guide).toLowerCase().indexOf(key)>=0;
+      return partOk&&keyOk;
+    });
+    var added={};db.tutorials.forEach(function(t){if(t.catalogId)added[t.catalogId]=1;});
+    document.getElementById("catalogList").innerHTML=list.length?list.map(function(a){
+      var exists=!!added[a.id]||db.tutorials.some(function(t){return !t.catalogId&&t.title===a.title&&t.part===a.part;});
+      return '<div class="catalog-card"><div class="catalog-card-top"><div class="catalog-card-main"><div class="catalog-card-title">'+esc(a.title)+'</div><div class="catalog-card-desc">'+esc(a.guide)+'</div><div class="catalog-card-meta"><span class="tag" style="--h:'+(HUE[a.part]||90)+'">'+esc(a.part)+'</span><span class="tag plain">'+esc(a.equipment)+'</span><span class="tag plain">'+esc(a.type)+'</span></div><div class="catalog-card-desc">'+esc(a.note)+'</div></div><button class="act '+(exists?'':'primary')+'" data-catalog-add="'+a.id+'" '+(exists?'disabled':'')+'>'+(exists?'已添加':'加入')+'</button></div></div>';
+    }).join(""):'<div class="empty"><strong>没有找到匹配动作</strong>试试其他关键词或分类</div>';
   }
-  function guessPart(text){
-    var map = [
-      ["胸",/胸|推举|卧推|俯卧撑|飞鸟|夹胸/],
-      ["背",/背|划船|引体|下拉|硬拉/],
-      ["腿",/腿|深蹲|蹲|箭步|腿举|提踵/],
-      ["臀",/臀|臀桥|hips?/i],
-      ["肩",/肩|侧平举|推举|三角/],
-      ["手臂",/手臂|弯举|三头|二头|臂屈伸/],
-      ["核心",/核心|腹|卷腹|平板|plank/i]
-    ];
-    for(var i=0;i<map.length;i++){ if(map[i][1].test(text)) return map[i][0]; }
-    return null;
+  function addCatalogAction(id){
+    var a=CATALOG.filter(function(x){return x.id===id;})[0];if(!a)return;
+    if(db.tutorials.some(function(t){return t.catalogId===id||(t.title===a.title&&t.part===a.part);})){toast("这个动作已经在动作库里了");renderCatalog();return;}
+    db.tutorials.push({id:uid(),catalogId:a.id,title:a.title,part:a.part,platform:"内置动作",equipment:a.equipment,type:a.type,guide:a.guide,frames:[],url:"",note:a.note,createdAt:Date.now()});
+    filterPart=a.part;keyword="";document.getElementById("searchInput").value="";
+    save();renderCatalog();renderLibrary();renderToday();renderMe();toast("已加入动作库："+a.title);
   }
-  document.getElementById("btnExtract").addEventListener("click", function(){
-    var txt = inPaste.value.trim();
-    if(!txt){ toast("先粘贴分享文案"); return; }
-    var m = txt.match(/https?:\/\/[^\s，。、"']+/);
-    if(!m){ toast("没找到链接，可手动填写"); return; }
-    var url = m[0].replace(/[)）]+$/,"");
-    inUrl.value = url;
-    var p = detect(url);
-    if(p) inPlatform.value = p;
-    if(!inTitle.value.trim()){
-      // 从分享文案里裁出可能的标题：去掉链接与抖音口令
-      var t = txt.replace(/https?:\/\/[^\s]+/g,"")
-        .replace(/\d+\.\d+\s*[A-Za-z]*:?\/?/g,"")
-        .replace(/复制(此|打开)|打开抖音|搜索|直接观看视频|看看【|的作品】?/g,"")
-        .replace(/[，,。\s]+/g," ").trim();
-      if(t) inTitle.value = t.slice(0,40);
-    }
-    var g = guessPart(inTitle.value || txt);
-    if(g) inPart.value = g;
-    toast("已识别：" + (p||"链接"));
-  });
+  document.getElementById("btnOpenCatalog").addEventListener("click",function(){catalogKeyword="";document.getElementById("catalogSearch").value="";catalogPart="全部";renderCatalog();show("catalog");});
+  document.getElementById("catalogSearch").addEventListener("input",function(e){catalogKeyword=e.target.value;renderCatalog();});
 
-  document.getElementById("btnSaveTut").addEventListener("click", function(){
-    var title = inTitle.value.trim();
-    if(!title){ toast("请填写动作名称"); return; }
-    var t = {
-      id: uid(),
-      title: title,
-      part: inPart.value,
-      platform: inPlatform.value,
-      url: inUrl.value.trim(),
-      note: inNote.value.trim(),
-      createdAt: Date.now()
-    };
-    db.tutorials.push(t);
-    save();
-    inPaste.value = inTitle.value = inUrl.value = inNote.value = "";
-    hide(); toast("已保存到教程库");
-    renderLibrary(); renderToday();
-    if(current!=="library") setView("library");
+  /* ---------- 添加自定义动作 ---------- */
+  var inTitle=document.getElementById("inTitle"),inNote=document.getElementById("inNote"),
+      inPart=document.getElementById("inPart"),inEquipment=document.getElementById("inEquipment"),
+      inType=document.getElementById("inType"),inGuide=document.getElementById("inGuide");
+  document.getElementById("btnSaveTut").addEventListener("click",function(){
+    var title=inTitle.value.trim();if(!title){toast("请填写动作名称");return;}
+    db.tutorials.push({id:uid(),title:title,part:inPart.value,platform:"自定义",equipment:inEquipment.value,type:inType.value,guide:inGuide.value.trim(),frames:[],url:"",note:inNote.value.trim(),createdAt:Date.now()});
+    filterPart=inPart.value;keyword="";document.getElementById("searchInput").value="";
+    save();inTitle.value=inGuide.value=inNote.value="";inPart.value="胸";inEquipment.value="自重";inType.value="复合动作";
+    hide();toast("已保存到动作库");renderLibrary();renderToday();renderMe();if(current!=="library")setView("library");
   });
 
   /* ---------- 记录 ---------- */
@@ -1006,7 +1082,7 @@ details.help[open] summary{color:var(--accent)}
 
   /* ---------- 事件委托 ---------- */
   document.addEventListener("click", function(e){
-    var el = e.target.closest("[data-check],[data-unplan],[data-addplan],[data-deltut],[data-dellog],[data-part]");
+    var el = e.target.closest("[data-check],[data-unplan],[data-addplan],[data-deltut],[data-dellog],[data-part],[data-catalog-add],[data-catalog-part]");
     if(!el) return;
 
     if(el.hasAttribute("data-check")){
@@ -1035,7 +1111,7 @@ details.help[open] summary{color:var(--accent)}
     }
     if(el.hasAttribute("data-deltut")){
       var did = el.getAttribute("data-deltut");
-      if(!confirm("删除这条教程？")) return;
+      if(!confirm("删除这个动作？")) return;
       db.tutorials = db.tutorials.filter(function(t){ return t.id!==did; });
       Object.keys(db.plan).forEach(function(k){
         db.plan[k] = (db.plan[k]||[]).filter(function(x){ return x!==did; });
@@ -1051,6 +1127,12 @@ details.help[open] summary{color:var(--accent)}
       filterPart = el.getAttribute("data-part");
       renderChips(); renderLibrary(); return;
     }
+    if(el.hasAttribute("data-catalog-part")){
+      catalogPart=el.getAttribute("data-catalog-part");renderCatalog();return;
+    }
+    if(el.hasAttribute("data-catalog-add")){
+      addCatalogAction(el.getAttribute("data-catalog-add"));return;
+    }
   });
 
   document.getElementById("searchInput").addEventListener("input", function(e){
@@ -1058,7 +1140,7 @@ details.help[open] summary{color:var(--accent)}
   });
 
   /* ---------- add entry points ---------- */
-  function openAdd(){ show("add"); setTimeout(function(){ inPaste && inPaste.focus(); }, 260); }
+  function openAdd(){ show("add"); setTimeout(function(){ inTitle.focus(); }, 260); }
   document.getElementById("fabAdd").addEventListener("click", openAdd);
   document.getElementById("btnAddTop").addEventListener("click", openAdd);
   document.getElementById("btnQuickLog").addEventListener("click", function(){ openLog(""); });
@@ -1095,25 +1177,14 @@ details.help[open] summary{color:var(--accent)}
     e.target.value = "";
   });
   document.getElementById("btnWipe").addEventListener("click", function(){
-    if(!confirm("确定清空所有教程和训练记录？此操作不可恢复。")) return;
+    if(!confirm("确定清空所有动作和训练记录？此操作不可恢复。")) return;
     db = blank(); save();
     renderToday(); renderLibrary(); renderMe(); renderTimerLogs();
     toast("已清空");
   });
 
   /* ---------- boot ---------- */
-  if(db.tutorials.length === 0){
-    // 首次使用的示例教程，明确标注为示例
-    db.tutorials = [
-      {id:uid(), title:"杠铃深蹲 · 膝盖导向基础版", part:"腿", platform:"抖音",
-       url:"", note:"示例：4 组 × 8 次。脚尖略外八，下蹲到大腿平行，起身时膝盖别内扣。", createdAt:Date.now()},
-      {id:uid(), title:"哑铃卧推 · 肩胛后缩稳定", part:"胸", platform:"小红书",
-       url:"", note:"示例：4 组 × 10 次。肩胛骨收紧压凳，手肘约 45°，不要让肩膀耸起。", createdAt:Date.now()},
-      {id:uid(), title:"高位下拉 · 背部发力找感觉", part:"背", platform:"B站",
-       url:"", note:"示例：4 组 × 12 次。先用肩胛下沉启动，再拉，别用手臂硬拽。", createdAt:Date.now()}
-    ];
-    save();
-  }
+  // 首次使用时保持动作库为空；用户可从内置常用动作库自行挑选。旧版本已保存的数据会原样保留。
 
   paintPresets(); paintTimer();
   renderToday(); renderChips(); renderLibrary(); renderTimerLogs(); renderMe();
