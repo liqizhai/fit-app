@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#080A0B">
+<meta name="description" content="燃练 — 把刷到的健身视频，变成你的训练清单。教程库、组间计时、训练记录，一个 App 全搞定。">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<title>燃练 · 教程变训练（单文件版）</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/space-grotesk@5.2.10/index.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/noto-sans-sc@5.2.10/index.css" rel="stylesheet">
+<style>
+:root{
+  --bg:#080A0B; --bg2:#0D1113; --surf:#151A1C; --surf2:#1D2427; --line:#252E30;
+  --ink:#EDF3F0; --muted:#889598; --dim:#5F6C6F;
+  --accent:#C4F542; --accent-ink:#0B1006; --accent-soft:rgba(196,245,66,.13);
+  --danger:#FF6157; --danger-soft:rgba(255,97,87,.13);
+  --r-s:10px; --r-m:16px; --r-l:22px;
+  --font-display:"Space Grotesk Variable","Noto Sans SC Variable","PingFang SC","Microsoft YaHei",sans-serif;
+  --font-body:"Noto Sans SC Variable","Space Grotesk Variable","PingFang SC","Microsoft YaHei",sans-serif;
+  --font-num:"Space Grotesk Variable","Noto Sans SC Variable",ui-monospace,monospace;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--font-body);
+  font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  overflow:hidden; height:100dvh;
+}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none;padding:0}
+svg{display:block}
+.ic{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ic-s{width:16px;height:16px}
+
+/* ---------- shell ---------- */
+.app{
+  position:relative; max-width:460px; margin:0 auto; height:100dvh;
+  display:flex; flex-direction:column; background:var(--bg);
+  box-shadow:0 0 0 1px rgba(255,255,255,.04), 0 30px 80px rgba(0,0,0,.7);
+}
+.topbar{
+  flex:0 0 auto; padding:calc(env(safe-area-inset-top,0px) + 14px) 18px 10px;
+  display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
+  background:linear-gradient(180deg,var(--bg) 70%,rgba(8,10,11,0));
+}
+.brand{display:flex;align-items:center;gap:9px}
+.brand-mark{
+  width:30px;height:30px;border-radius:9px;background:var(--accent);
+  display:grid;place-items:center;color:var(--accent-ink);flex:0 0 auto;
+}
+.brand-mark .ic{stroke-width:2.6;width:18px;height:18px}
+.brand-name{font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:.02em}
+.brand-sub{font-size:10.5px;color:var(--dim);letter-spacing:.14em;text-transform:uppercase;line-height:1}
+.icon-btn{
+  width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
+  background:var(--surf); color:var(--ink); border:1px solid var(--line);
+}
+.icon-btn:active{transform:scale(.94)}
+
+main{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+main::-webkit-scrollbar{display:none}
+.view{display:none;padding:4px 18px calc(20px + var(--safe-b));animation:in .22s ease}
+.view.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- tabbar ---------- */
+.tabbar{
+  flex:0 0 auto; display:grid; grid-template-columns:repeat(4,1fr);
+  padding:8px 8px calc(8px + var(--safe-b));
+  background:rgba(13,17,19,.92); backdrop-filter:blur(16px);
+  border-top:1px solid var(--line);
+}
+.tab{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:5px 0 3px;color:var(--dim);font-size:10.5px;letter-spacing:.04em;
+  transition:color .16s;
+}
+.tab.on{color:var(--accent)}
+.tab .ic{width:21px;height:21px}
+.tab:active{opacity:.6}
+
+/* ---------- generic ---------- */
+.eyebrow{
+  font-family:var(--font-display); font-size:11px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--dim); display:flex; align-items:center; gap:8px;
+}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+h2.sec{
+  font-family:var(--font-display); font-size:15.5px; font-weight:600;
+  margin:22px 0 11px; display:flex; align-items:center; justify-content:space-between;
+}
+.muted{color:var(--muted)}
+.num{font-family:var(--font-num);font-variant-numeric:tabular-nums}
+
+.card{background:var(--surf);border:1px solid var(--line);border-radius:var(--r-m)}
+.empty{
+  border:1px dashed var(--line);border-radius:var(--r-m);padding:26px 18px;
+  text-align:center;color:var(--dim);font-size:13px;line-height:1.7;
+}
+.empty strong{color:var(--muted);font-weight:600;display:block;margin-bottom:4px;font-size:14px}
+
+/* ---------- hero (today) ---------- */
+.hero{
+  position:relative; overflow:hidden; border-radius:var(--r-l);
+  background:radial-gradient(120% 140% at 8% 0%,#1B2422 0%,var(--surf) 55%,#111617 100%);
+  border:1px solid var(--line); padding:18px;
+  display:grid; grid-template-columns:1fr auto; gap:14px; align-items:center;
+}
+.hero::after{
+  content:"";position:absolute;right:-54px;top:-64px;width:150px;height:150px;
+  border-radius:50%;background:radial-gradient(circle,var(--accent-soft),transparent 70%);
+}
+.hero-date{font-family:var(--font-num);font-size:11px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
+.hero-title{font-family:var(--font-display);font-size:23px;font-weight:700;line-height:1.22;margin:7px 0 3px;letter-spacing:-.01em}
+.hero-title em{font-style:normal;color:var(--accent)}
+.hero-note{font-size:12.5px;color:var(--muted)}
+.ring{position:relative;width:78px;height:78px;flex:0 0 auto}
+.ring svg{transform:rotate(-90deg)}
+.ring-num{
+  position:absolute;inset:0;display:grid;place-content:center;text-align:center;
+  font-family:var(--font-num);font-size:21px;font-weight:600;line-height:1;
+}
+.ring-num small{display:block;font-size:9px;letter-spacing:.1em;color:var(--dim);margin-top:3px;font-weight:500}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.stat{background:var(--surf);border:1px solid var(--line);border-radius:var(--r-s);padding:11px 10px}
+.stat b{display:block;font-family:var(--font-num);font-size:18px;font-weight:600;letter-spacing:-.01em}
+.stat span{font-size:10.5px;color:var(--dim);letter-spacing:.06em}
+
+/* ---------- plan list ---------- */
+.plan-item{
+  display:flex;align-items:flex-start;gap:11px;padding:13px 14px;
+  background:var(--surf);border:1px solid var(--line);border-radius:var(--r-m);
+  margin-bottom:8px; transition:opacity .18s,border-color .18s;
+}
+.plan-item.done{opacity:.5;border-color:#2C3A2A}
+.plan-item.done .p-name{text-decoration:line-through;text-decoration-color:var(--dim)}
+.check{
+  flex:0 0 auto;width:23px;height:23px;border-radius:7px;margin-top:1px;
+  border:1.6px solid #3A4648;display:grid;place-items:center;color:transparent;
+  transition:.16s;
+}
+.plan-item.done .check{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.check .ic{width:14px;height:14px;stroke-width:3}
+.p-main{flex:1 1 auto;min-width:0}
+.p-name{font-size:14.5px;font-weight:500;line-height:1.4;word-break:break-word}
+.p-meta{display:flex;align-items:center;gap:7px;margin-top:5px;flex-wrap:wrap}
+.p-actions{display:flex;gap:2px;flex:0 0 auto}
+.mini-btn{
+  width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:var(--dim);
+}
+.mini-btn:active{background:var(--surf2);color:var(--ink)}
+.mini-btn.dz:active{color:var(--danger)}
+
+.tag{
+  font-size:10.5px;line-height:1.5;padding:1.5px 7px;border-radius:5px;
+  font-weight:600;letter-spacing:.02em;white-space:nowrap;
+  background:hsl(var(--h,90) 85% 60% / .13); color:hsl(var(--h,90) 80% 68%);
+}
+.tag.plain{background:var(--surf2);color:var(--muted);font-weight:500}
+
+/* ---------- library ---------- */
+.toolbar{position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 0 8px;margin:0 -18px;padding-left:18px;padding-right:18px}
+.search{
+  display:flex;align-items:center;gap:9px;background:var(--surf);border:1px solid var(--line);
+  border-radius:12px;padding:0 12px;height:42px;color:var(--dim);
+}
+.search input{flex:1;background:none;border:none;outline:none;height:100%;color:var(--ink);font-size:14px}
+.search input::placeholder{color:var(--dim)}
+.chips{display:flex;gap:7px;overflow-x:auto;margin-top:10px;padding-bottom:2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;padding:6px 13px;border-radius:20px;font-size:12.5px;
+  background:var(--surf);border:1px solid var(--line);color:var(--muted);
+  transition:.15s;white-space:nowrap;
+}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+
+.tut{
+  background:var(--surf);border:1px solid var(--line);border-radius:var(--r-m);
+  padding:13px 14px;margin-bottom:9px;position:relative;overflow:hidden;
+}
+.tut::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:hsl(var(--h,90) 85% 58%)}
+.tut-top{display:flex;gap:9px;align-items:flex-start}
+.tut-title{font-size:14.5px;font-weight:600;line-height:1.42;flex:1;word-break:break-word}
+.tut-note{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.6;word-break:break-word;white-space:pre-wrap}
+.tut-foot{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.act{
+  font-size:12px;padding:6px 11px;border-radius:8px;display:inline-flex;align-items:center;gap:5px;
+  background:var(--surf2);color:var(--ink);border:1px solid #2C3639;font-weight:500;
+}
+.act:active{transform:scale(.96)}
+.act.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.act.ghost{background:none;border-color:transparent;color:var(--dim);padding:6px 6px}
+.act.ghost.dz{color:#B45A55}
+.act .ic{width:14px;height:14px;stroke-width:2.2}
+
+/* ---------- timer ---------- */
+.timer-wrap{display:grid;place-items:center;padding:6px 0 2px}
+.timer{
+  position:relative;width:min(268px,72vw);aspect-ratio:1;display:grid;place-items:center;
+}
+.timer svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.timer-face{text-align:center;z-index:1}
+.timer-time{
+  font-family:var(--font-num);font-size:clamp(44px,15vw,58px);font-weight:500;
+  letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums;
+}
+.timer-face .lbl{font-size:11px;letter-spacing:.22em;color:var(--dim);margin-top:9px;text-transform:uppercase}
+.presets{display:flex;gap:8px;justify-content:center;margin-top:6px;flex-wrap:wrap}
+.preset{
+  padding:7px 15px;border-radius:20px;font-size:13px;font-family:var(--font-num);
+  background:var(--surf);border:1px solid var(--line);color:var(--muted);
+}
+.preset.on{background:var(--accent-soft);border-color:#4A5C28;color:var(--accent);font-weight:600}
+.timer-ctl{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:20px;align-items:center}
+.round-btn{
+  height:56px;border-radius:50%;display:grid;place-items:center;
+  background:var(--surf);border:1px solid var(--line);color:var(--ink);
+}
+.round-btn .ic{width:24px;height:24px}
+.big-btn{
+  height:56px;border-radius:28px;background:var(--accent);color:var(--accent-ink);
+  font-family:var(--font-display);font-size:15px;font-weight:700;letter-spacing:.03em;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+}
+.big-btn:active{transform:scale(.97)}
+.big-btn.running{background:var(--surf2);color:var(--ink);border:1px solid #33403F}
+
+/* ---------- logs ---------- */
+.log-row{
+  display:flex;align-items:center;gap:11px;padding:11px 13px;background:var(--surf);
+  border:1px solid var(--line);border-radius:12px;margin-bottom:7px;
+}
+.log-name{flex:1;min-width:0;font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.log-val{font-family:var(--font-num);font-size:12.5px;color:var(--muted);white-space:nowrap}
+.log-vol{font-family:var(--font-num);font-size:13px;font-weight:600;color:var(--accent);min-width:52px;text-align:right}
+
+/* ---------- forms / sheet ---------- */
+.backdrop{
+  position:fixed;inset:0;background:rgba(4,6,7,.72);backdrop-filter:blur(3px);
+  opacity:0;pointer-events:none;transition:opacity .2s;z-index:40;
+}
+.backdrop.on{opacity:1;pointer-events:auto}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;
+  max-width:460px;margin:0 auto;background:var(--bg2);
+  border-radius:var(--r-l) var(--r-l) 0 0;border:1px solid var(--line);border-bottom:none;
+  transform:translateY(101%);transition:transform .26s cubic-bezier(.32,.72,0,1);
+  max-height:92dvh;display:flex;flex-direction:column;
+}
+.sheet.on{transform:translateY(0)}
+.sheet-handle{width:38px;height:4px;border-radius:2px;background:#39464A;margin:10px auto 2px;flex:0 0 auto}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;padding:8px 18px 12px;flex:0 0 auto}
+.sheet-head h3{font-family:var(--font-display);font-size:16.5px;font-weight:600;margin:0}
+.sheet-body{padding:0 18px calc(20px + var(--safe-b));overflow-y:auto;flex:1 1 auto}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:11.5px;letter-spacing:.1em;color:var(--dim);margin-bottom:6px;text-transform:uppercase;font-weight:600}
+.input,.textarea,.select{
+  width:100%;background:var(--surf);border:1px solid var(--line);border-radius:11px;
+  padding:12px 13px;outline:none;font-size:15px;color:var(--ink);transition:border-color .15s;
+}
+.input:focus,.textarea:focus,.select:focus{border-color:#4C5A32}
+.textarea{resize:vertical;min-height:64px;line-height:1.55}
+.select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23889598' stroke-width='2.2' stroke-linecap='round'><path d='m6 9 6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 13px center;padding-right:38px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.paste-box{
+  display:flex;gap:9px;align-items:center;background:var(--surf2);border:1px dashed #39464A;
+  border-radius:11px;padding:10px 12px;margin-bottom:13px;
+}
+.paste-box .ic{color:var(--accent);flex:0 0 auto}
+.paste-box p{margin:0;font-size:12px;color:var(--muted);line-height:1.5;flex:1}
+.full-btn{
+  width:100%;height:50px;border-radius:14px;background:var(--accent);color:var(--accent-ink);
+  font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:.02em;
+  display:flex;align-items:center;justify-content:center;gap:7px;margin-top:6px;
+}
+.full-btn:active{transform:scale(.985)}
+.full-btn.sec{background:var(--surf);color:var(--ink);border:1px solid var(--line);font-weight:600}
+.full-btn.dz{background:var(--danger-soft);color:#FF8B84;border:1px solid #4A2624}
+
+/* ---------- me ---------- */
+.row-item{
+  display:flex;align-items:center;gap:12px;padding:14px;background:var(--surf);
+  border:1px solid var(--line);border-radius:12px;margin-bottom:8px;width:100%;text-align:left;
+}
+.row-item .ic{color:var(--muted);flex:0 0 auto}
+.row-item span{flex:1;font-size:14px}
+.row-item small{font-size:11.5px;color:var(--dim);font-family:var(--font-num)}
+details.help{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:0 14px;margin-bottom:8px}
+details.help summary{padding:14px 0;font-size:14px;font-weight:500;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+details.help summary::-webkit-details-marker{display:none}
+details.help[open] summary{color:var(--accent)}
+.help-body{padding:0 0 14px;font-size:13px;color:var(--muted);line-height:1.85}
+.help-body b{color:var(--ink);font-weight:600}
+.help-body ol{padding-left:18px;margin:6px 0}
+.help-body code{background:var(--surf2);padding:1px 5px;border-radius:4px;font-size:12px;color:var(--accent)}
+
+.toast{
+  position:fixed;left:50%;bottom:calc(84px + var(--safe-b));transform:translate(-50%,14px);
+  background:#E9F5EA;color:#0B1208;font-size:13px;font-weight:600;padding:10px 18px;
+  border-radius:22px;z-index:90;opacity:0;pointer-events:none;transition:.22s;max-width:88vw;text-align:center;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.fab{
+  position:fixed;right:calc(50% - 230px + 18px);bottom:calc(78px + var(--safe-b));z-index:20;
+  width:54px;height:54px;border-radius:50%;background:var(--accent);color:var(--accent-ink);
+  display:grid;place-items:center;box-shadow:0 10px 26px rgba(196,245,66,.24);
+}
+.fab .ic{width:26px;height:26px;stroke-width:2.4}
+.fab:active{transform:scale(.94)}
+@media(max-width:478px){.fab{right:18px}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .7-1.5l7-6a2 2 0 0 1 2.6 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><path d="M10 2h4"/><path d="m12 14 3-3"/><circle cx="12" cy="14" r="8"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="m6 3 14 9-14 9z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.8 9.8 0 0 0-6.7 2.7L3 8"/><path d="M3 3v5h5"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-dl" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+  <symbol id="i-ul" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 8 5-5 5 5"/><path d="M12 3v12"/></symbol>
+  <symbol id="i-plus15" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/><circle cx="12" cy="12" r="10" opacity=".35"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></symbol>
+</svg>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark"><svg class="ic"><use href="#i-bolt"/></svg></div>
+      <div>
+        <div class="brand-name">燃练</div>
+        <div class="brand-sub">RepLog</div>
+      </div>
+    </div>
+    <button class="icon-btn" id="btnAddTop" aria-label="添加教程"><svg class="ic ic-s"><use href="#i-plus"/></svg></button>
+  </header>
+
+  <main id="main">
+    <!-- ============ 今日 ============ -->
+    <section class="view on" id="view-today">
+      <div class="hero">
+        <div>
+          <div class="hero-date" id="todayDate">—</div>
+          <div class="hero-title" id="heroTitle">今天的训练<br><em>准备好了吗</em></div>
+          <div class="hero-note" id="heroNote">从教程库挑几个动作加入今日</div>
+        </div>
+        <div class="ring">
+          <svg viewBox="0 0 78 78">
+            <circle cx="39" cy="39" r="34" fill="none" stroke="#243033" stroke-width="6"/>
+            <circle id="ringArc" cx="39" cy="39" r="34" fill="none" stroke="#C4F542" stroke-width="6"
+              stroke-linecap="round" stroke-dasharray="213.6" stroke-dashoffset="213.6"
+              style="transition:stroke-dashoffset .5s ease"/>
+          </svg>
+          <div class="ring-num" id="ringNum">0<small>/ 4 次</small></div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><b class="num" id="stWeek">0</b><span>本周训练</span></div>
+        <div class="stat"><b class="num" id="stVol">0</b><span>今日容量 kg</span></div>
+        <div class="stat"><b class="num" id="stTut">0</b><span>教程储备</span></div>
+      </div>
+
+      <h2 class="sec">今日清单 <span class="muted" style="font-size:11.5px;font-weight:400" id="planCount"></span></h2>
+      <div id="planList"></div>
+
+      <h2 class="sec">快速记录 <span class="muted" style="font-size:11.5px;font-weight:400">set × rep × kg</span></h2>
+      <div id="todayLogs"></div>
+      <button class="full-btn sec" id="btnQuickLog" style="margin-top:2px">
+        <svg class="ic ic-s"><use href="#i-plus"/></svg> 记录一组
+      </button>
+    </section>
+
+    <!-- ============ 教程库 ============ -->
+    <section class="view" id="view-library">
+      <div class="toolbar">
+        <div class="search">
+          <svg class="ic ic-s"><use href="#i-search"/></svg>
+          <input id="searchInput" type="search" placeholder="搜索动作、部位或备注" autocomplete="off">
+        </div>
+        <div class="chips" id="partChips"></div>
+      </div>
+      <div id="tutList" style="margin-top:14px"></div>
+    </section>
+
+    <!-- ============ 计时 ============ -->
+    <section class="view" id="view-timer">
+      <div class="eyebrow" style="margin-bottom:16px">组间休息</div>
+      <div class="timer-wrap">
+        <div class="timer">
+          <svg viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="88" fill="none" stroke="#1E2729" stroke-width="9"/>
+            <circle id="timerArc" cx="100" cy="100" r="88" fill="none" stroke="#C4F542" stroke-width="9"
+              stroke-linecap="round" stroke-dasharray="552.9" stroke-dashoffset="0"
+              style="transition:stroke-dashoffset .25s linear,stroke .2s"/>
+          </svg>
+          <div class="timer-face">
+            <div class="timer-time num" id="timerTime">01:00</div>
+            <div class="lbl" id="timerLbl">RECOVERY</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="presets" id="presets"></div>
+
+      <div class="timer-ctl">
+        <button class="round-btn" id="btnReset" aria-label="重置"><svg class="ic"><use href="#i-reset"/></svg></button>
+        <button class="big-btn" id="btnStart"><svg class="ic ic-s"><use href="#i-play"/></svg> 开始</button>
+        <button class="round-btn" id="btnPlus15" aria-label="加十五秒"><svg class="ic"><use href="#i-plus15"/></svg></button>
+      </div>
+
+      <h2 class="sec">本次训练记录</h2>
+      <div id="timerLogs"></div>
+      <button class="full-btn" id="btnLog2" style="margin-top:10px">
+        <svg class="ic ic-s"><use href="#i-plus"/></svg> 添加一组
+      </button>
+    </section>
+
+    <!-- ============ 我的 ============ -->
+    <section class="view" id="view-me">
+      <div class="eyebrow" style="margin-bottom:14px">训练数据</div>
+      <div class="stats" style="grid-template-columns:1fr 1fr;margin-bottom:18px">
+        <div class="stat"><b class="num" id="meTut">0</b><span>我的教程</span></div>
+        <div class="stat"><b class="num" id="meDays">0</b><span>训练天数</span></div>
+        <div class="stat"><b class="num" id="meSets">0</b><span>累计组数</span></div>
+        <div class="stat"><b class="num" id="meVol">0</b><span>累计容量 kg</span></div>
+      </div>
+
+      <div class="eyebrow" style="margin-bottom:14px">数据管理</div>
+      <button class="row-item" id="btnExport">
+        <svg class="ic"><use href="#i-dl"/></svg><span>导出全部数据<small style="margin-left:8px">JSON 备份</small></span>
+      </button>
+      <button class="row-item" id="btnImport">
+        <svg class="ic"><use href="#i-ul"/></svg><span>导入备份<small style="margin-left:8px">恢复数据</small></span>
+      </button>
+      <input type="file" id="fileInput" accept="application/json,.json" style="display:none">
+      <button class="row-item" id="btnWipe">
+        <svg class="ic" style="color:#B45A55"><use href="#i-trash"/></svg><span style="color:#D9746D">清空所有数据</span>
+      </button>
+
+      <div class="eyebrow" style="margin:22px 0 14px">装到手机</div>
+      <details class="help">
+        <summary>安卓 / 苹果安装方法 <svg class="ic ic-s"><use href="#i-plus"/></svg></summary>
+        <div class="help-body">
+          <b>安卓（Chrome / Edge / 三星浏览器）</b>
+          <ol>
+            <li>把本文件夹放到任意静态托管（GitHub Pages、Netlify Drop 都能免费一键部署），拿到 <code>https://</code> 网址</li>
+            <li>手机浏览器打开该网址</li>
+            <li>点右上角菜单 → <b>「安装应用」</b> 或 <b>「添加到主屏幕」</b></li>
+            <li>桌面出现「燃练」图标，全屏打开、断网也能用</li>
+          </ol>
+          <b>苹果 Safari</b>
+          <ol>
+            <li>用 Safari 打开网址</li>
+            <li>点分享按钮 → <b>「添加到主屏幕」</b></li>
+          </ol>
+          <b>想变成真正的 .apk</b><br>
+          打开 PWABuilder.com，粘贴你的 https 网址，选择 Android 打包，即可下载签名好的 APK／AAB 安装包。
+        </div>
+      </details>
+      <details class="help">
+        <summary>怎么把抖音视频搬进来 <svg class="ic ic-s"><use href="#i-plus"/></svg></summary>
+        <div class="help-body">
+          <b>一键搬运流程</b>
+          <ol>
+            <li>抖音视频页 → 分享 → <b>复制链接</b></li>
+            <li>回到燃练 → 点右上角 <b>＋</b> → 把整段分享文案粘进去</li>
+            <li>点 <b>「提取链接」</b>，链接和平台自动识别</li>
+            <li>填标题、选部位，保存 —— 教程就进库了</li>
+          </ol>
+          <b>为什么只存链接？</b><br>
+          视频版权归创作者，直接下载搬运会侵权。燃练只保存链接 + 你自己的训练笔记（组数、要点、感受），点「观看」跳回原视频，这样既合规又能长期用。
+          <br><br>
+          <b>想离线看？</b>在抖音里把视频收藏／下载到相册，再把要点写进教程备注，训练时看备注就够用了。
+        </div>
+      </details>
+      <details class="help">
+        <summary>关于燃练 <svg class="ic ic-s"><use href="#i-plus"/></svg></summary>
+        <div class="help-body">
+          燃练 RepLog · v1.0<br>
+          一个只做一件事的健身工具：把你在各个平台刷到的动作教程，整理成能真正执行的训练清单。<br><br>
+          所有数据保存在你自己的手机本地（localStorage），不上传任何服务器。换手机时用「导出／导入」搬数据。
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <button class="tab on" data-view="today"><svg class="ic"><use href="#i-home"/></svg>今日</button>
+    <button class="tab" data-view="library"><svg class="ic"><use href="#i-book"/></svg>教程库</button>
+    <button class="tab" data-view="timer"><svg class="ic"><use href="#i-timer"/></svg>计时</button>
+    <button class="tab" data-view="me"><svg class="ic"><use href="#i-user"/></svg>我的</button>
+  </nav>
+</div>
+
+<button class="fab" id="fabAdd" aria-label="添加教程"><svg class="ic"><use href="#i-plus"/></svg></button>
+
+<div class="backdrop" id="backdrop"></div>
+
+<!-- 添加教程 -->
+<div class="sheet" id="sheetAdd">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <h3>添加教程</h3>
+    <button class="icon-btn" data-close aria-label="关闭"><svg class="ic ic-s"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="sheet-body">
+    <div class="field">
+      <label>分享文案 / 链接</label>
+      <textarea class="textarea" id="inPaste" placeholder="把抖音、小红书、B站的分享文案整段粘贴到这里…"></textarea>
+    </div>
+    <div class="paste-box">
+      <svg class="ic ic-s"><use href="#i-link"/></svg>
+      <p>自动识别平台与视频链接</p>
+      <button class="act primary" id="btnExtract">提取链接</button>
+    </div>
+    <div class="field">
+      <label>动作名称</label>
+      <input class="input" id="inTitle" placeholder="例：杠铃深蹲 · 膝盖导向版">
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label>训练部位</label>
+        <select class="select" id="inPart">
+          <option value="胸">胸</option><option value="背">背</option><option value="腿">腿</option>
+          <option value="臀">臀</option><option value="肩">肩</option><option value="手臂">手臂</option>
+          <option value="核心">核心</option><option value="全身">全身</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>平台</label>
+        <select class="select" id="inPlatform">
+          <option value="抖音">抖音</option><option value="小红书">小红书</option>
+          <option value="B站">B站</option><option value="YouTube">YouTube</option><option value="其他">其他</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>视频链接</label>
+      <input class="input" id="inUrl" placeholder="https://…" inputmode="url">
+    </div>
+    <div class="field">
+      <label>训练备注（组数 / 要点 / 重量）</label>
+      <textarea class="textarea" id="inNote" placeholder="例：4 组 × 8 次，膝盖别内扣，重量 60kg 起步"></textarea>
+    </div>
+    <button class="full-btn" id="btnSaveTut"><svg class="ic ic-s"><use href="#i-check"/></svg> 保存到教程库</button>
+  </div>
+</div>
+
+<!-- 记录一组 -->
+<div class="sheet" id="sheetLog">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <h3>记录一组</h3>
+    <button class="icon-btn" data-close aria-label="关闭"><svg class="ic ic-s"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="sheet-body">
+    <div class="field">
+      <label>动作</label>
+      <input class="input" id="logName" list="tutNames" placeholder="填动作名称">
+      <datalist id="tutNames"></datalist>
+    </div>
+    <div class="grid3">
+      <div class="field"><label>组数</label><input class="input num" id="logSets" type="number" inputmode="numeric" value="4" min="1" max="99"></div>
+      <div class="field"><label>次数</label><input class="input num" id="logReps" type="number" inputmode="numeric" value="8" min="1" max="999"></div>
+      <div class="field"><label>重量 kg</label><input class="input num" id="logWeight" type="number" inputmode="decimal" value="60" min="0" max="999"></div>
+    </div>
+    <button class="full-btn" id="btnSaveLog"><svg class="ic ic-s"><use href="#i-check"/></svg> 保存记录</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "ranlian.v1";
+  var PARTS = ["胸","背","腿","臀","肩","手臂","核心","全身"];
+  var HUE = {胸:8, 背:210, 腿:142, 臀:320, 肩:45, 手臂:275, 核心:185, 全身:95};
+
+  /* ---------- state ---------- */
+  var db = load();
+  function blank(){ return {tutorials:[], plan:{}, logs:[], done:{}}; }
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(!raw) return blank();
+      var d = JSON.parse(raw);
+      d.tutorials = d.tutorials || []; d.plan = d.plan || {};
+      d.logs = d.logs || []; d.done = d.done || {};
+      return d;
+    }catch(e){ return blank(); }
+  }
+  function save(){
+    try{ localStorage.setItem(KEY, JSON.stringify(db)); }catch(e){ toast("存储空间不足，请先导出备份"); }
+  }
+  function todayKey(d){
+    var t = d || new Date();
+    return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
+  }
+  var TODAY = todayKey();
+  function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+  function esc(s){
+    return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  /* ---------- toast ---------- */
+  var toastEl = document.getElementById("toast"), toastT;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("on");
+    clearTimeout(toastT);
+    toastT = setTimeout(function(){ toastEl.classList.remove("on"); }, 2000);
+  }
+
+  /* ---------- tabs ---------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+  var views = {
+    today: document.getElementById("view-today"),
+    library: document.getElementById("view-library"),
+    timer: document.getElementById("view-timer"),
+    me: document.getElementById("view-me")
+  };
+  var fab = document.getElementById("fabAdd");
+  var current = "today";
+  tabs.forEach(function(t){
+    t.addEventListener("click", function(){
+      var v = t.getAttribute("data-view");
+      setView(v);
+    });
+  });
+  function setView(v){
+    current = v;
+    tabs.forEach(function(t){ t.classList.toggle("on", t.getAttribute("data-view")===v); });
+    Object.keys(views).forEach(function(k){ views[k].classList.toggle("on", k===v); });
+    fab.style.display = (v==="library"||v==="today") ? "grid" : "none";
+    document.getElementById("main").scrollTop = 0;
+    if(v==="today") renderToday();
+    if(v==="library") renderLibrary();
+    if(v==="timer") renderTimerLogs();
+    if(v==="me") renderMe();
+  }
+
+  /* ---------- sheets ---------- */
+  var backdrop = document.getElementById("backdrop");
+  var sheets = { add: document.getElementById("sheetAdd"), log: document.getElementById("sheetLog") };
+  var openSheet = null;
+  function show(name){
+    hide();
+    sheets[name].classList.add("on");
+    backdrop.classList.add("on");
+    openSheet = name;
+  }
+  function hide(){
+    Object.keys(sheets).forEach(function(k){ sheets[k].classList.remove("on"); });
+    backdrop.classList.remove("on");
+    openSheet = null;
+  }
+  backdrop.addEventListener("click", hide);
+  Array.prototype.forEach.call(document.querySelectorAll("[data-close]"), function(b){
+    b.addEventListener("click", hide);
+  });
+
+  /* ---------- 今日 ---------- */
+  function weekStats(){
+    var now = new Date(), start = new Date(now);
+    start.setDate(now.getDate() - ((now.getDay()+6)%7));
+    start.setHours(0,0,0,0);
+    var days = {}, vol = 0;
+    db.logs.forEach(function(l){
+      var t = new Date(l.date+"T00:00:00");
+      if(t >= start){ days[l.date] = 1; }
+    });
+    return Object.keys(days).length;
+  }
+  function todayVolume(){
+    return db.logs.filter(function(l){ return l.date===TODAY; })
+      .reduce(function(a,l){ return a + (l.sets*l.reps*l.weight); }, 0);
+  }
+  function renderToday(){
+    var d = new Date();
+    var wd = ["周日","周一","周二","周三","周四","周五","周六"][d.getDay()];
+    document.getElementById("todayDate").textContent =
+      d.getFullYear()+"."+String(d.getMonth()+1).padStart(2,"0")+"."+String(d.getDate()).padStart(2,"0")+"  "+wd;
+
+    var wk = weekStats();
+    var pct = Math.min(wk/4, 1);
+    document.getElementById("ringArc").setAttribute("stroke-dashoffset", String(213.6*(1-pct)));
+    document.getElementById("ringNum").innerHTML = wk + '<small>/ 4 次</small>';
+    document.getElementById("stWeek").textContent = wk;
+    document.getElementById("stVol").textContent = Math.round(todayVolume());
+    document.getElementById("stTut").textContent = db.tutorials.length;
+
+    var ids = db.plan[TODAY] || [];
+    var tuts = ids.map(function(id){
+      return db.tutorials.filter(function(t){ return t.id===id; })[0];
+    }).filter(Boolean);
+    document.getElementById("planCount").textContent = tuts.length ? tuts.length+" 个动作" : "";
+
+    var heroTitle = document.getElementById("heroTitle");
+    var heroNote = document.getElementById("heroNote");
+    if(tuts.length){
+      var finished = tuts.filter(function(t){ return (db.done[TODAY]||[]).indexOf(t.id)>=0; }).length;
+      heroTitle.innerHTML = "今日安排<br><em>"+tuts.length+" 个动作</em>";
+      heroNote.textContent = finished ? "已完成 "+finished+" / "+tuts.length+"，继续保持" : "完成 "+tuts.length+" 个动作，练完打卡";
+    }else{
+      heroTitle.innerHTML = "今天的训练<br><em>准备好了吗</em>";
+      heroNote.textContent = "从教程库挑几个动作加入今日";
+    }
+
+    var box = document.getElementById("planList");
+    if(!tuts.length){
+      box.innerHTML = '<div class="empty"><strong>今日清单还是空的</strong>去「教程库」点「加入今日」，把收藏的动作排进今天的训练</div>';
+    }else{
+      var doneList = db.done[TODAY] || [];
+      box.innerHTML = tuts.map(function(t){
+        var done = doneList.indexOf(t.id)>=0;
+        return '<div class="plan-item'+(done?" done":"")+'" data-plan="'+t.id+'">'
+          + '<button class="check" data-check="'+t.id+'" aria-label="完成"><svg class="ic"><use href="#i-check"/></svg></button>'
+          + '<div class="p-main"><div class="p-name">'+esc(t.title)+'</div>'
+          + '<div class="p-meta"><span class="tag" style="--h:'+(HUE[t.part]||90)+'">'+esc(t.part)+'</span>'
+          + '<span class="tag plain">'+esc(t.platform)+'</span>'
+          + (t.note ? '<span class="muted" style="font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px">'+esc(t.note)+'</span>' : '')
+          + '</div></div>'
+          + '<div class="p-actions">'
+          + (t.url ? '<a class="mini-btn" href="'+esc(t.url)+'" target="_blank" rel="noopener" aria-label="观看"><svg class="ic ic-s"><use href="#i-link"/></svg></a>' : '')
+          + '<button class="mini-btn dz" data-unplan="'+t.id+'" aria-label="移出今日"><svg class="ic ic-s"><use href="#i-x"/></svg></button>'
+          + '</div></div>';
+      }).join("");
+    }
+
+    var logs = db.logs.filter(function(l){ return l.date===TODAY; });
+    var tbox = document.getElementById("todayLogs");
+    tbox.innerHTML = logs.length ? logs.slice().reverse().map(logRow).join("")
+      : '<div class="empty" style="padding:18px"><strong>今天还没有记录</strong>点下面按钮记下第一组</div>';
+  }
+  function logRow(l){
+    return '<div class="log-row" data-log="'+l.id+'">'
+      + '<div class="log-name">'+esc(l.name)+'</div>'
+      + '<div class="log-val num">'+l.sets+'×'+l.reps+' @ '+l.weight+'kg</div>'
+      + '<div class="log-vol num">'+Math.round(l.sets*l.reps*l.weight)+'</div>'
+      + '<button class="mini-btn dz" data-dellog="'+l.id+'" aria-label="删除"><svg class="ic ic-s"><use href="#i-x"/></svg></button>'
+      + '</div>';
+  }
+
+  /* ---------- 教程库 ---------- */
+  var filterPart = "全部", keyword = "";
+  function renderChips(){
+    var list = ["全部"].concat(PARTS);
+    document.getElementById("partChips").innerHTML = list.map(function(p){
+      return '<button class="chip'+(p===filterPart?" on":"")+'" data-part="'+p+'">'+p+'</button>';
+    }).join("");
+  }
+  function renderLibrary(){
+    renderChips();
+    var list = db.tutorials.filter(function(t){
+      var okPart = filterPart==="全部" || t.part===filterPart;
+      var k = keyword.trim().toLowerCase();
+      var okKey = !k || (t.title+" "+t.part+" "+t.platform+" "+(t.note||"")).toLowerCase().indexOf(k)>=0;
+      return okPart && okKey;
+    });
+    var box = document.getElementById("tutList");
+    if(!list.length){
+      box.innerHTML = '<div class="empty"><strong>'+(db.tutorials.length? "没有匹配的教程":"教程库还是空的")+'</strong>'
+        + '点右上角或右下角 ＋，把抖音、小红书刷到的动作视频存进来</div>';
+      return;
+    }
+    box.innerHTML = list.slice().reverse().map(function(t){
+      var inPlan = (db.plan[TODAY]||[]).indexOf(t.id)>=0;
+      return '<div class="tut" style="--h:'+(HUE[t.part]||90)+'">'
+        + '<div class="tut-top"><div class="tut-title">'+esc(t.title)+'</div>'
+        + '<div style="display:flex;gap:6px;flex:0 0 auto">'
+        + '<span class="tag" style="--h:'+(HUE[t.part]||90)+'">'+esc(t.part)+'</span>'
+        + '<span class="tag plain">'+esc(t.platform)+'</span></div></div>'
+        + (t.note ? '<div class="tut-note">'+esc(t.note)+'</div>' : '')
+        + '<div class="tut-foot">'
+        + '<button class="act '+(inPlan?"":"primary")+'" data-addplan="'+t.id+'">'
+        + (inPlan ? '<svg class="ic"><use href="#i-check"/></svg> 已在今日' : '<svg class="ic"><use href="#i-plus"/></svg> 加入今日')+'</button>'
+        + (t.url ? '<a class="act" href="'+esc(t.url)+'" target="_blank" rel="noopener"><svg class="ic"><use href="#i-play"/></svg> 观看</a>' : '')
+        + '<button class="act ghost dz" data-deltut="'+t.id+'" aria-label="删除"><svg class="ic"><use href="#i-trash"/></svg></button>'
+        + '</div></div>';
+    }).join("");
+  }
+
+  /* ---------- 计时器 ---------- */
+  var timer = { total: 60, left: 60, running: false, endAt: 0, tick: null };
+  var PRESETS = [30,45,60,90,120];
+  var arc = document.getElementById("timerArc");
+  var CIRC = 552.9;
+  function fmt(s){
+    s = Math.max(0, Math.round(s));
+    return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+  }
+  function paintTimer(){
+    document.getElementById("timerTime").textContent = fmt(timer.left);
+    var pct = timer.total ? timer.left/timer.total : 0;
+    arc.setAttribute("stroke-dashoffset", String(CIRC*(1-pct)));
+    arc.setAttribute("stroke", timer.left<=0 ? "#FF6157" : (timer.running ? "#C4F542" : "#7E8F6B"));
+    var lbl = document.getElementById("timerLbl");
+    lbl.textContent = timer.left<=0 ? "REST DONE" : (timer.running ? "RUNNING" : "RECOVERY");
+  }
+  function paintPresets(){
+    document.getElementById("presets").innerHTML = PRESETS.map(function(s){
+      return '<button class="preset'+(timer.total===s?" on":"")+'" data-preset="'+s+'">'+s+'s</button>';
+    }).join("");
+  }
+  function beep(){
+    try{
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if(!Ctx) return;
+      var ctx = new Ctx();
+      [0,0.22,0.44].forEach(function(delay){
+        var o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "sine"; o.frequency.value = 880;
+        g.gain.setValueAtTime(0.0001, ctx.currentTime+delay);
+        g.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime+delay+0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+delay+0.18);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(ctx.currentTime+delay); o.stop(ctx.currentTime+delay+0.2);
+      });
+      setTimeout(function(){ ctx.close(); }, 1200);
+    }catch(e){}
+    if(navigator.vibrate) navigator.vibrate([180,90,180]);
+  }
+  function startTimer(){
+    if(timer.left<=0) timer.left = timer.total;
+    timer.running = true;
+    timer.endAt = Date.now() + timer.left*1000;
+    clearInterval(timer.tick);
+    timer.tick = setInterval(function(){
+      timer.left = (timer.endAt - Date.now())/1000;
+      if(timer.left <= 0){
+        timer.left = 0; timer.running = false;
+        clearInterval(timer.tick); beep();
+        document.getElementById("btnStart").classList.remove("running");
+        document.getElementById("btnStart").innerHTML = '<svg class="ic ic-s"><use href="#i-play"/></svg> 开始';
+      }
+      paintTimer();
+      if(!timer.running) paintTimer();
+    }, 200);
+    var b = document.getElementById("btnStart");
+    b.classList.add("running");
+    b.innerHTML = '<svg class="ic ic-s"><use href="#i-pause"/></svg> 暂停';
+    paintTimer();
+  }
+  function pauseTimer(){
+    timer.running = false;
+    clearInterval(timer.tick);
+    var b = document.getElementById("btnStart");
+    b.classList.remove("running");
+    b.innerHTML = '<svg class="ic ic-s"><use href="#i-play"/></svg> 继续';
+    paintTimer();
+  }
+  function resetTimer(){
+    timer.running = false; clearInterval(timer.tick);
+    timer.left = timer.total;
+    var b = document.getElementById("btnStart");
+    b.classList.remove("running");
+    b.innerHTML = '<svg class="ic ic-s"><use href="#i-play"/></svg> 开始';
+    paintTimer();
+  }
+  document.getElementById("btnStart").addEventListener("click", function(){
+    timer.running ? pauseTimer() : startTimer();
+  });
+  document.getElementById("btnReset").addEventListener("click", resetTimer);
+  document.getElementById("btnPlus15").addEventListener("click", function(){
+    timer.left += 15; timer.total = Math.max(timer.total, timer.left);
+    if(timer.running) timer.endAt += 15000;
+    paintTimer();
+  });
+  document.getElementById("presets").addEventListener("click", function(e){
+    var b = e.target.closest("[data-preset]");
+    if(!b) return;
+    timer.total = Number(b.getAttribute("data-preset"));
+    resetTimer(); paintPresets();
+  });
+  function renderTimerLogs(){
+    var logs = db.logs.filter(function(l){ return l.date===TODAY; });
+    var box = document.getElementById("timerLogs");
+    box.innerHTML = logs.length ? logs.slice().reverse().map(logRow).join("")
+      : '<div class="empty" style="padding:18px"><strong>今天还没有记录</strong>练完一组就记一下，方便回看进度</div>';
+  }
+
+  /* ---------- 我的 ---------- */
+  function renderMe(){
+    document.getElementById("meTut").textContent = db.tutorials.length;
+    var days = {}; db.logs.forEach(function(l){ days[l.date]=1; });
+    document.getElementById("meDays").textContent = Object.keys(days).length;
+    document.getElementById("meSets").textContent = db.logs.reduce(function(a,l){ return a + l.sets; },0);
+    document.getElementById("meVol").textContent =
+      Math.round(db.logs.reduce(function(a,l){ return a + l.sets*l.reps*l.weight; },0));
+  }
+
+  /* ---------- 添加教程 ---------- */
+  var inPaste = document.getElementById("inPaste"), inTitle = document.getElementById("inTitle"),
+      inUrl = document.getElementById("inUrl"), inNote = document.getElementById("inNote"),
+      inPart = document.getElementById("inPart"), inPlatform = document.getElementById("inPlatform");
+  function detect(url){
+    if(!url) return null;
+    if(/douyin\.com|iesdouyin|v\.douyin/i.test(url)) return "抖音";
+    if(/xiaohongshu|xhslink/i.test(url)) return "小红书";
+    if(/bilibili|b23\.tv/i.test(url)) return "B站";
+    if(/youtube|youtu\.be/i.test(url)) return "YouTube";
+    return "其他";
+  }
+  function guessPart(text){
+    var map = [
+      ["胸",/胸|推举|卧推|俯卧撑|飞鸟|夹胸/],
+      ["背",/背|划船|引体|下拉|硬拉/],
+      ["腿",/腿|深蹲|蹲|箭步|腿举|提踵/],
+      ["臀",/臀|臀桥|hips?/i],
+      ["肩",/肩|侧平举|推举|三角/],
+      ["手臂",/手臂|弯举|三头|二头|臂屈伸/],
+      ["核心",/核心|腹|卷腹|平板|plank/i]
+    ];
+    for(var i=0;i<map.length;i++){ if(map[i][1].test(text)) return map[i][0]; }
+    return null;
+  }
+  document.getElementById("btnExtract").addEventListener("click", function(){
+    var txt = inPaste.value.trim();
+    if(!txt){ toast("先粘贴分享文案"); return; }
+    var m = txt.match(/https?:\/\/[^\s，。、"']+/);
+    if(!m){ toast("没找到链接，可手动填写"); return; }
+    var url = m[0].replace(/[)）]+$/,"");
+    inUrl.value = url;
+    var p = detect(url);
+    if(p) inPlatform.value = p;
+    if(!inTitle.value.trim()){
+      // 从分享文案里裁出可能的标题：去掉链接与抖音口令
+      var t = txt.replace(/https?:\/\/[^\s]+/g,"")
+        .replace(/\d+\.\d+\s*[A-Za-z]*:?\/?/g,"")
+        .replace(/复制(此|打开)|打开抖音|搜索|直接观看视频|看看【|的作品】?/g,"")
+        .replace(/[，,。\s]+/g," ").trim();
+      if(t) inTitle.value = t.slice(0,40);
+    }
+    var g = guessPart(inTitle.value || txt);
+    if(g) inPart.value = g;
+    toast("已识别：" + (p||"链接"));
+  });
+
+  document.getElementById("btnSaveTut").addEventListener("click", function(){
+    var title = inTitle.value.trim();
+    if(!title){ toast("请填写动作名称"); return; }
+    var t = {
+      id: uid(),
+      title: title,
+      part: inPart.value,
+      platform: inPlatform.value,
+      url: inUrl.value.trim(),
+      note: inNote.value.trim(),
+      createdAt: Date.now()
+    };
+    db.tutorials.push(t);
+    save();
+    inPaste.value = inTitle.value = inUrl.value = inNote.value = "";
+    hide(); toast("已保存到教程库");
+    renderLibrary(); renderToday();
+    if(current!=="library") setView("library");
+  });
+
+  /* ---------- 记录 ---------- */
+  var logName = document.getElementById("logName");
+  function openLog(name){
+    if(name) logName.value = name;
+    document.getElementById("tutNames").innerHTML = db.tutorials.map(function(t){
+      return '<option value="'+esc(t.title)+'">';
+    }).join("");
+    show("log");
+  }
+  document.getElementById("btnSaveLog").addEventListener("click", function(){
+    var name = logName.value.trim();
+    if(!name){ toast("请填写动作名称"); return; }
+    db.logs.push({
+      id: uid(), date: TODAY, name: name,
+      sets: Math.max(1, Number(document.getElementById("logSets").value)||1),
+      reps: Math.max(1, Number(document.getElementById("logReps").value)||1),
+      weight: Math.max(0, Number(document.getElementById("logWeight").value)||0),
+      at: Date.now()
+    });
+    save(); hide(); toast("已记录");
+    renderToday(); renderTimerLogs(); renderMe();
+  });
+
+  /* ---------- 事件委托 ---------- */
+  document.addEventListener("click", function(e){
+    var el = e.target.closest("[data-check],[data-unplan],[data-addplan],[data-deltut],[data-dellog],[data-part]");
+    if(!el) return;
+
+    if(el.hasAttribute("data-check")){
+      var id = el.getAttribute("data-check");
+      db.done[TODAY] = db.done[TODAY] || [];
+      var i = db.done[TODAY].indexOf(id);
+      if(i>=0) db.done[TODAY].splice(i,1); else db.done[TODAY].push(id);
+      save(); renderToday(); return;
+    }
+    if(el.hasAttribute("data-unplan")){
+      var pid = el.getAttribute("data-unplan");
+      db.plan[TODAY] = (db.plan[TODAY]||[]).filter(function(x){ return x!==pid; });
+      save(); renderToday(); toast("已移出今日"); return;
+    }
+    if(el.hasAttribute("data-addplan")){
+      var aid = el.getAttribute("data-addplan");
+      db.plan[TODAY] = db.plan[TODAY] || [];
+      if(db.plan[TODAY].indexOf(aid)>=0){
+        db.plan[TODAY] = db.plan[TODAY].filter(function(x){ return x!==aid; });
+        toast("已移出今日");
+      }else{
+        db.plan[TODAY].push(aid);
+        toast("已加入今日训练");
+      }
+      save(); renderLibrary(); renderToday(); return;
+    }
+    if(el.hasAttribute("data-deltut")){
+      var did = el.getAttribute("data-deltut");
+      if(!confirm("删除这条教程？")) return;
+      db.tutorials = db.tutorials.filter(function(t){ return t.id!==did; });
+      Object.keys(db.plan).forEach(function(k){
+        db.plan[k] = (db.plan[k]||[]).filter(function(x){ return x!==did; });
+      });
+      save(); renderLibrary(); renderToday(); toast("已删除"); return;
+    }
+    if(el.hasAttribute("data-dellog")){
+      var lid = el.getAttribute("data-dellog");
+      db.logs = db.logs.filter(function(l){ return l.id!==lid; });
+      save(); renderToday(); renderTimerLogs(); renderMe(); return;
+    }
+    if(el.hasAttribute("data-part")){
+      filterPart = el.getAttribute("data-part");
+      renderChips(); renderLibrary(); return;
+    }
+  });
+
+  document.getElementById("searchInput").addEventListener("input", function(e){
+    keyword = e.target.value; renderLibrary();
+  });
+
+  /* ---------- add entry points ---------- */
+  function openAdd(){ show("add"); setTimeout(function(){ inPaste && inPaste.focus(); }, 260); }
+  document.getElementById("fabAdd").addEventListener("click", openAdd);
+  document.getElementById("btnAddTop").addEventListener("click", openAdd);
+  document.getElementById("btnQuickLog").addEventListener("click", function(){ openLog(""); });
+  document.getElementById("btnLog2").addEventListener("click", function(){ openLog(""); });
+
+  /* ---------- data io ---------- */
+  document.getElementById("btnExport").addEventListener("click", function(){
+    var blob = new Blob([JSON.stringify(db,null,2)], {type:"application/json"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "ranlian-backup-"+TODAY+".json";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 800);
+    toast("已导出备份文件");
+  });
+  document.getElementById("btnImport").addEventListener("click", function(){
+    document.getElementById("fileInput").click();
+  });
+  document.getElementById("fileInput").addEventListener("change", function(e){
+    var f = e.target.files && e.target.files[0];
+    if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){
+      try{
+        var d = JSON.parse(r.result);
+        if(!d.tutorials || !d.logs) throw new Error("格式不对");
+        db.tutorials = d.tutorials; db.logs = d.logs;
+        db.plan = d.plan || {}; db.done = d.done || {};
+        save(); toast("导入成功，共 "+db.logs.length+" 条记录");
+        renderToday(); renderLibrary(); renderMe(); renderTimerLogs(); setView("today");
+      }catch(err){ toast("文件格式不正确"); }
+    };
+    r.readAsText(f);
+    e.target.value = "";
+  });
+  document.getElementById("btnWipe").addEventListener("click", function(){
+    if(!confirm("确定清空所有教程和训练记录？此操作不可恢复。")) return;
+    db = blank(); save();
+    renderToday(); renderLibrary(); renderMe(); renderTimerLogs();
+    toast("已清空");
+  });
+
+  /* ---------- boot ---------- */
+  if(db.tutorials.length === 0){
+    // 首次使用的示例教程，明确标注为示例
+    db.tutorials = [
+      {id:uid(), title:"杠铃深蹲 · 膝盖导向基础版", part:"腿", platform:"抖音",
+       url:"", note:"示例：4 组 × 8 次。脚尖略外八，下蹲到大腿平行，起身时膝盖别内扣。", createdAt:Date.now()},
+      {id:uid(), title:"哑铃卧推 · 肩胛后缩稳定", part:"胸", platform:"小红书",
+       url:"", note:"示例：4 组 × 10 次。肩胛骨收紧压凳，手肘约 45°，不要让肩膀耸起。", createdAt:Date.now()},
+      {id:uid(), title:"高位下拉 · 背部发力找感觉", part:"背", platform:"B站",
+       url:"", note:"示例：4 组 × 12 次。先用肩胛下沉启动，再拉，别用手臂硬拽。", createdAt:Date.now()}
+    ];
+    save();
+  }
+
+  paintPresets(); paintTimer();
+  renderToday(); renderChips(); renderLibrary(); renderTimerLogs(); renderMe();
+  fab.style.display = "grid";
+
+  if("serviceWorker" in navigator && location.protocol.indexOf("http")===0){
+    window.addEventListener("load", function(){
+      navigator.serviceWorker.register("sw.js").catch(function(){});
+    });
+  }
+})();
+</script>
+</body>
+</html>
