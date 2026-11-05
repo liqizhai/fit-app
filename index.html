@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#080A0B">
-<meta name="description" content="燃练 — 选择常用训练动作，整理训练清单。动作库、组间计时、训练记录，一个 App 全搞定。">
+<meta name="description" content="燃练 — 训练计划、动作库、饮食计划与训练记录，一个 App 全搞定。">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>燃练 · 动作训练（单文件版）</title>
+<title>燃练 · 训练与饮食计划</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/space-grotesk@5.2.10/index.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/noto-sans-sc@5.2.10/index.css" rel="stylesheet">
@@ -38,6 +38,44 @@ button{cursor:pointer;border:none;background:none;padding:0}
 svg{display:block}
 .ic{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .ic-s{width:16px;height:16px}
+
+
+/* ---------- nutrition planner ---------- */
+.diet-hero{background:radial-gradient(120% 140% at 8% 0%,#20291b 0%,var(--surf) 58%,#111617 100%);border:1px solid var(--line);border-radius:var(--r-l);padding:16px;margin-bottom:14px}
+.diet-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:13px}
+.diet-kpi{background:rgba(0,0,0,.18);border:1px solid var(--line);border-radius:11px;padding:9px 8px;min-width:0}
+.diet-kpi b{display:block;font:600 17px var(--font-num);white-space:nowrap}
+.diet-kpi span{font-size:10px;color:var(--muted)}
+.diet-progress{height:6px;border-radius:9px;background:var(--surf2);overflow:hidden;margin-top:6px}
+.diet-progress i{display:block;height:100%;background:var(--accent);border-radius:9px;width:0%}
+.day-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin:12px 0}
+.day-btn{border:1px solid var(--line);border-radius:10px;padding:8px 0;color:var(--muted);font-size:11px;background:var(--surf);text-align:center}
+.day-btn b{display:block;font:600 13px var(--font-num);color:var(--ink)}
+.day-btn.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.day-btn.on b{color:var(--accent)}
+.meal-card{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:12px;margin:9px 0}
+.meal-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.meal-head strong{font-size:13px}.meal-head small{color:var(--dim);font-size:10px}
+.food-row{display:grid;grid-template-columns:1fr 68px 28px;gap:7px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.food-row:first-of-type{border-top:0}
+.food-row b{font-size:12px;display:block}.food-row small{font-size:10px;color:var(--muted)}
+.food-qty{width:68px;background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:7px 4px;text-align:center;font:12px var(--font-num)}
+.food-del{color:var(--dim);font-size:18px;padding:3px}
+.food-add{display:flex;gap:7px;margin-top:9px}
+.food-add select{flex:1;min-width:0}
+.food-add button,.mini-btn{border:1px solid var(--line);border-radius:9px;padding:8px 11px;color:var(--accent);font-size:11px;background:var(--surf2)}
+.macro-line{display:flex;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:10px;margin-top:5px}
+.diet-tools{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.diet-tools button{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:var(--surf);font-size:11px;color:var(--muted)}
+.diet-tools button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.target-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.target-grid .field{margin:0}
+.target-grid .input,.target-grid .select{padding:10px}
+.food-catalog{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
+.food-pick{border:1px solid var(--line);background:var(--surf);border-radius:10px;padding:9px;text-align:left;min-width:0}
+.food-pick b{font-size:11px;display:block}.food-pick small{font-size:9px;color:var(--muted)}
+.diet-note{font-size:10px;color:var(--dim);line-height:1.6;margin:9px 0}
+@media(min-width:430px){.food-catalog{grid-template-columns:repeat(3,1fr)}}
 
 /* ---------- shell ---------- */
 .app{
@@ -72,7 +110,7 @@ main::-webkit-scrollbar{display:none}
 
 /* ---------- tabbar ---------- */
 .tabbar{
-  flex:0 0 auto; display:grid; grid-template-columns:repeat(4,1fr);
+  flex:0 0 auto; display:grid; grid-template-columns:repeat(5,1fr);
   padding:8px 8px calc(8px + var(--safe-b));
   background:rgba(13,17,19,.92); backdrop-filter:blur(16px);
   border-top:1px solid var(--line);
@@ -136,7 +174,7 @@ h2.sec{
 
 /* ---------- plan list ---------- */
 .plan-item{
-  display:flex;align-items:flex-start;gap:11px;padding:13px 14px;
+  display:flex;align-items:center;gap:11px;padding:13px 14px;
   background:var(--surf);border:1px solid var(--line);border-radius:var(--r-m);
   margin-bottom:8px; transition:opacity .18s,border-color .18s;
 }
@@ -321,14 +359,43 @@ details.help[open] summary{color:var(--accent)}
 
 .hint{font-size:11px;color:var(--muted);line-height:1.55}
 .tut-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
-.catalog-card{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px}
+.catalog-card{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px}
 .catalog-card-top{display:flex;align-items:flex-start;gap:10px}
+.action-cover{width:104px;height:88px;flex:0 0 104px;object-fit:cover;border-radius:10px;border:1px solid var(--line);background:#101719;display:block}
+.tut-cover{width:92px;height:78px;flex:0 0 92px;object-fit:cover;border-radius:10px;border:1px solid var(--line);background:#101719}
+.cover-upload{display:flex;align-items:center;gap:10px;padding:10px;border:1px dashed #46534a;border-radius:12px;background:var(--surf2)}
+.cover-upload img{width:76px;height:64px;object-fit:cover;border-radius:8px;background:#101719}
+.cover-upload .cover-upload-copy{flex:1;min-width:0;font-size:11px;color:var(--muted);line-height:1.5}
+.cover-upload button{border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:11px;color:var(--accent);white-space:nowrap}
 .catalog-card-main{flex:1;min-width:0}
 .catalog-card-title{font-size:13.5px;font-weight:600;line-height:1.45}
 .catalog-card-desc{font-size:11.5px;color:var(--muted);line-height:1.55;margin-top:4px}
 .catalog-card-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
 .catalog-card .act{flex:0 0 auto;align-self:center}
 .catalog-card .act:disabled{opacity:.55;cursor:default}
+
+/* ---------- weekly training planner ---------- */
+.week-plan-card{background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:13px;margin:10px 0 18px}
+.week-plan-actions{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}
+.week-plan-actions button{border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:10px;color:var(--muted);background:var(--surf2)}
+.week-plan-actions button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.week-plan-row{border-top:1px solid var(--line);padding:11px 0}
+.week-plan-cover{width:42px;height:38px;flex:0 0 42px;object-fit:cover;border-radius:7px;border:1px solid var(--line);background:#101719}
+.week-plan-row:first-child{border-top:0}
+.week-plan-top{display:flex;align-items:center;gap:7px;min-width:0}
+.week-plan-top strong{font-size:12px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.week-plan-top .wk-meta{font-size:9px;color:var(--muted)}
+.week-plan-top button{border:1px solid var(--line);border-radius:7px;padding:5px 7px;color:var(--muted);font-size:10px}
+.week-plan-fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:9px}
+.week-plan-fields label{font-size:9px;color:var(--dim);display:block}
+.week-plan-fields input{width:100%;min-width:0;margin-top:3px;padding:7px 3px;border:1px solid var(--line);border-radius:7px;background:var(--bg2);text-align:center;font:12px var(--font-num)}
+.week-warmup{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-top:8px}
+.week-warmup input{accent-color:var(--accent)}
+.catalog-count{font-size:10px;color:var(--dim);margin:0 0 9px}
+.catalog-card-actions{display:flex;flex-direction:column;gap:6px;flex:0 0 auto}
+.catalog-card-actions .act{white-space:nowrap}
+@media(max-width:360px){.week-plan-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 </style>
 </head>
 <body>
@@ -392,6 +459,21 @@ details.help[open] summary{color:var(--accent)}
         <div class="stat"><b class="num" id="stTut">0</b><span>动作总数</span></div>
       </div>
 
+      <h2 class="sec">每周训练计划 <span class="muted" style="font-size:11.5px;font-weight:400">每天练什么，由你安排</span></h2>
+      <div class="chips" id="weekDayChips" style="margin:0 0 9px"></div>
+      <div class="week-plan-card">
+        <div class="row" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong id="weekPlanTitle">本日训练安排</strong><span class="muted" id="weekPlanCount" style="font-size:10px"></span>
+        </div>
+        <div class="week-plan-actions">
+          <button class="primary" id="btnAddWeekActions">＋ 添加动作</button>
+          <button id="btnCopyWeek">复制到其他日期</button>
+          <button id="btnToggleRest">设为休息日</button>
+          <button id="btnUseWeekPlan">应用到今日清单</button>
+        </div>
+        <div id="weekPlanList"></div>
+      </div>
+
       <h2 class="sec">今日清单 <span class="muted" style="font-size:11.5px;font-weight:400" id="planCount"></span></h2>
       <div id="planList"></div>
 
@@ -446,6 +528,63 @@ details.help[open] summary{color:var(--accent)}
       <button class="full-btn" id="btnLog2" style="margin-top:10px">
         <svg class="ic ic-s"><use href="#i-plus"/></svg> 添加一组
       </button>
+    </section>
+
+
+    <!-- ============ 饮食计划 ============ -->
+    <section class="view" id="view-diet">
+      <div class="eyebrow" style="margin-bottom:12px">NUTRITION / 饮食管理</div>
+      <div class="diet-hero">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+          <div><div class="hero-date">DAILY INTAKE</div><div class="hero-title" style="font-size:21px;margin-top:5px">今日营养概览</div><div class="hero-note" id="dietGoalLabel">先设置你的营养目标</div></div>
+          <button class="mini-btn" id="btnDietSettings">目标设置</button>
+        </div>
+        <div class="diet-kpis">
+          <div class="diet-kpi"><b id="dietKcal">0 / —</b><span>热量 kcal</span><div class="diet-progress"><i id="dietKcalBar"></i></div></div>
+          <div class="diet-kpi"><b id="dietProtein">0 / —</b><span>蛋白质 g</span><div class="diet-progress"><i id="dietProteinBar"></i></div></div>
+          <div class="diet-kpi"><b id="dietCarbs">0 / —</b><span>碳水 g</span><div class="diet-progress"><i id="dietCarbsBar"></i></div></div>
+        </div>
+        <div class="macro-line"><span id="dietFat">脂肪 0 / — g</span><span id="dietRemaining">剩余热量 — kcal</span></div>
+      </div>
+
+      <h2 class="sec" style="margin-top:17px">每周饮食安排 <small class="muted" style="font-size:10px;font-weight:400">按星期循环管理</small></h2>
+      <div class="day-strip" id="dietDays"></div>
+      <div id="dietMeals"></div>
+      <div class="diet-tools">
+        <button id="btnCopyDiet">复制到其他日期</button>
+        <button id="btnClearDiet">清空当天餐单</button>
+        <button class="primary" id="btnAddFoodCustom">＋ 自定义食物</button>
+      </div>
+
+      <h2 class="sec">食物库 <small class="muted" style="font-size:10px;font-weight:400">每 100g 参考营养值</small></h2>
+      <div class="search" style="margin:0 0 9px"><svg class="ic ic-s"><use href="#i-search"/></svg><input id="foodSearch" type="search" placeholder="搜索食物名称" autocomplete="off"></div>
+      <div class="field" style="margin:0 0 8px"><label>从食物库快速加入到</label><select class="select" id="foodQuickMeal"><option value="breakfast">早餐</option><option value="lunch">午餐</option><option value="dinner">晚餐</option><option value="snack" selected>加餐</option></select></div>
+      <div class="food-catalog" id="foodCatalog"></div>
+      <div class="diet-note">食物营养数据为通用估算值，品牌、烹饪方式和生熟状态会造成差异。包装食品优先按营养成分表录入；食材重量请保持生重或熟重口径一致。饮食目标仅作日常规划参考，不替代专业营养建议。</div>
+
+      <details class="help" id="dietSettingsPanel">
+        <summary>营养目标与个人资料 <svg class="ic ic-s"><use href="#i-plus"/></svg></summary>
+        <div class="help-body">
+          <div class="field"><label>目标模式</label><select class="select" id="dietGoal"><option value="cut">减脂</option><option value="bulk">增肌</option><option value="maintain">维持体重</option><option value="manual">完全手动设置</option></select></div>
+          <div class="target-grid">
+            <div class="field"><label>体重 kg</label><input class="input" id="dietWeight" type="number" min="25" max="300" step="0.1" placeholder="例如 70"></div>
+            <div class="field"><label>身高 cm</label><input class="input" id="dietHeight" type="number" min="100" max="230" placeholder="例如 175"></div>
+            <div class="field"><label>年龄</label><input class="input" id="dietAge" type="number" min="14" max="100" placeholder="例如 22"></div>
+            <div class="field"><label>生理性别（用于估算）</label><select class="select" id="dietSex"><option value="male">男</option><option value="female">女</option></select></div>
+          </div>
+          <div class="field" style="margin-top:10px"><label>日常活动水平</label><select class="select" id="dietActivity"><option value="1.2">久坐，日常活动较少</option><option value="1.375">轻度活动，每周运动 1–3 天</option><option value="1.55" selected>中度活动，每周运动 3–5 天</option><option value="1.725">高活动，每周运动 6–7 天</option><option value="1.9">非常高活动/体力劳动</option></select></div>
+          <div class="diet-note">自动估算使用基础代谢与活动系数推算维持热量，再按目标调整。结果是起始参考值，应结合数周体重趋势和实际状态调整。</div>
+          <button class="full-btn" id="btnAutoTargets">根据资料计算目标</button>
+          <h3 style="font-size:13px;margin:17px 0 9px">每日目标（可手动修改）</h3>
+          <div class="target-grid">
+            <div class="field"><label>热量 kcal</label><input class="input" id="targetKcal" type="number" min="0"></div>
+            <div class="field"><label>蛋白质 g</label><input class="input" id="targetProtein" type="number" min="0"></div>
+            <div class="field"><label>碳水 g</label><input class="input" id="targetCarbs" type="number" min="0"></div>
+            <div class="field"><label>脂肪 g</label><input class="input" id="targetFat" type="number" min="0"></div>
+          </div>
+          <button class="full-btn" id="btnSaveTargets" style="margin-top:10px">保存营养目标</button>
+        </div>
+      </details>
     </section>
 
     <!-- ============ 我的 ============ -->
@@ -504,7 +643,7 @@ details.help[open] summary{color:var(--accent)}
       <details class="help">
         <summary>关于燃练 <svg class="ic ic-s"><use href="#i-plus"/></svg></summary>
         <div class="help-body">
-          燃练 RepLog · v1.0<br>
+          燃练 RepLog · 训练与饮食管理版<br>
           一个简洁的健身工具：从常用动作库中挑选动作，整理成能真正执行的训练清单。<br><br>
           所有数据保存在你自己的手机本地（localStorage），不上传任何服务器。换手机时用「导出／导入」搬数据。
         </div>
@@ -515,6 +654,7 @@ details.help[open] summary{color:var(--accent)}
   <nav class="tabbar">
     <button class="tab on" data-view="today"><svg class="ic"><use href="#i-home"/></svg>今日</button>
     <button class="tab" data-view="library"><svg class="ic"><use href="#i-book"/></svg>动作库</button>
+    <button class="tab" data-view="diet"><svg class="ic"><use href="#i-book"/></svg>饮食</button>
     <button class="tab" data-view="timer"><svg class="ic"><use href="#i-timer"/></svg>计时</button>
     <button class="tab" data-view="me"><svg class="ic"><use href="#i-user"/></svg>我的</button>
   </nav>
@@ -534,7 +674,11 @@ details.help[open] summary{color:var(--accent)}
   <div class="sheet-body">
     <div class="search" style="margin:0 0 10px">
       <svg class="ic ic-s"><use href="#i-search"/></svg>
-      <input id="catalogSearch" type="search" placeholder="搜索动作名称、部位或器械" autocomplete="off">
+      <input id="catalogSearch" type="search" placeholder="搜索动作中文名或英文名" autocomplete="off">
+    </div>
+    <div class="grid2" style="margin-bottom:10px">
+      <select class="select" id="catalogEquipment"><option value="全部">全部器械</option><option>自重</option><option>哑铃</option><option>杠铃</option><option>固定器械</option><option>龙门架/绳索</option><option>弹力带</option><option>壶铃</option><option>跳绳</option><option>健腹轮</option><option>战绳</option><option>自行车</option><option>跳箱</option><option>无器械</option></select>
+      <select class="select" id="catalogType"><option value="全部">全部类型</option><option value="复合动作">复合动作</option><option value="孤立动作">孤立动作</option><option value="有氧/体能">有氧/体能</option><option value="拉伸/活动度">拉伸/活动度</option></select>
     </div>
     <div class="chips" id="catalogChips" style="margin:0 0 12px"></div>
     <div class="hint" style="margin-bottom:10px">选择适合自己的动作，加入后可在动作库中安排今日训练。</div>
@@ -574,6 +718,10 @@ details.help[open] summary{color:var(--accent)}
     </div>
     <div class="field"><label>动作类型</label>
       <select class="select" id="inType"><option value="复合动作">复合动作</option><option value="孤立动作">孤立动作</option><option value="有氧/体能">有氧/体能</option><option value="拉伸/活动度">拉伸/活动度</option></select>
+    </div>
+    <div class="field"><label>动作封面（可选）</label>
+      <div class="cover-upload"><img id="customCoverPreview" alt="动作封面预览"><div class="cover-upload-copy">可上传动作照片或示范截图；不上传时会自动生成对应动作示意图。</div><button type="button" id="btnChooseCover">上传图片</button></div>
+      <input id="inCoverFile" type="file" accept="image/*" hidden>
     </div>
     <div class="field"><label>动作要领 / 注意事项</label>
       <textarea class="textarea" id="inGuide" placeholder="填写动作姿势、发力方式和注意事项"></textarea>
@@ -619,14 +767,15 @@ details.help[open] summary{color:var(--accent)}
 
   /* ---------- state ---------- */
   var db = load();
-  function blank(){ return {tutorials:[], plan:{}, logs:[], done:{}}; }
+  function blank(){ return {tutorials:[], plan:{}, weekPlan:{}, weekPlanSettings:{}, weekRest:{}, logs:[], done:{}, diet:{profile:{},targets:{},week:{}}}; }
   function load(){
     try{
       var raw = localStorage.getItem(KEY);
       if(!raw) return blank();
       var d = JSON.parse(raw);
-      d.tutorials = d.tutorials || []; d.plan = d.plan || {};
-      d.logs = d.logs || []; d.done = d.done || {};
+      d.tutorials = d.tutorials || []; d.plan = d.plan || {}; d.weekPlan = d.weekPlan || {}; d.weekPlanSettings = d.weekPlanSettings || {}; d.weekRest = d.weekRest || {};
+      d.logs = d.logs || []; d.done = d.done || {}; d.diet = d.diet || {profile:{},targets:{},week:{}};
+      d.diet.profile = d.diet.profile || {}; d.diet.targets = d.diet.targets || {}; d.diet.week = d.diet.week || {};
       return d;
     }catch(e){ return blank(); }
   }
@@ -660,7 +809,8 @@ details.help[open] summary{color:var(--accent)}
     today: document.getElementById("view-today"),
     library: document.getElementById("view-library"),
     timer: document.getElementById("view-timer"),
-    me: document.getElementById("view-me")
+    me: document.getElementById("view-me"),
+    diet: document.getElementById("view-diet")
   };
   var fab = document.getElementById("fabAdd");
   var current = "today";
@@ -680,6 +830,7 @@ details.help[open] summary{color:var(--accent)}
     if(v==="library") renderLibrary();
     if(v==="timer") renderTimerLogs();
     if(v==="me") renderMe();
+    if(v==="diet") renderDiet();
   }
 
   /* ---------- sheets ---------- */
@@ -702,6 +853,53 @@ details.help[open] summary{color:var(--accent)}
     b.addEventListener("click", hide);
   });
 
+  /* ---------- 每周训练计划 ---------- */
+  var weekDayNames=["周一","周二","周三","周四","周五","周六","周日"];
+  var selectedWeekDay=(new Date().getDay()+6)%7;
+  function weekKey(day,id){return String(day)+":"+id;}
+  function weekSettings(day,id){
+    db.weekPlanSettings=db.weekPlanSettings||{};var k=weekKey(day,id);
+    if(!db.weekPlanSettings[k])db.weekPlanSettings[k]={sets:3,reps:10,weight:0,rest:90,warmup:false};
+    return db.weekPlanSettings[k];
+  }
+  function renderWeekPlan(){
+    db.weekPlan=db.weekPlan||{};db.weekRest=db.weekRest||{};
+    var chips=document.getElementById("weekDayChips");
+    chips.innerHTML=weekDayNames.map(function(n,i){var count=(db.weekPlan[String(i)]||[]).length;return '<button class="chip'+(selectedWeekDay===i?' on':'')+'" data-weekday="'+i+'">'+n+(db.weekRest[String(i)]?' · 休':'')+(count&&!db.weekRest[String(i)]?' · '+count:'')+'</button>';}).join("");
+    document.getElementById("weekPlanTitle").textContent=weekDayNames[selectedWeekDay]+"训练安排";
+    var ids=db.weekPlan[String(selectedWeekDay)]||[],isRest=!!db.weekRest[String(selectedWeekDay)];
+    document.getElementById("weekPlanCount").textContent=isRest?"休息日":ids.length+" 个动作";
+    document.getElementById("btnToggleRest").textContent=isRest?"恢复训练日":"设为休息日";
+    var box=document.getElementById("weekPlanList");
+    if(isRest){box.innerHTML='<div class="empty" style="padding:14px"><strong>今天安排为休息日</strong>原有动作安排会保留，恢复训练日即可继续编辑。</div>';return;}
+    var items=ids.map(function(id){return db.tutorials.filter(function(t){return t.id===id;})[0];}).filter(Boolean);
+    if(!items.length){box.innerHTML='<div class="empty" style="padding:14px"><strong>这一天还没有安排动作</strong>点击「添加动作」，从动作库选择想练的内容。</div>';return;}
+    box.innerHTML=items.map(function(t,i){var cfg=weekSettings(selectedWeekDay,t.id);return '<div class="week-plan-row"><div class="week-plan-top"><img class="week-plan-cover" src="'+coverFor(t)+'" alt="" loading="lazy"><strong>'+(i+1)+'. '+esc(t.title)+'</strong><span class="wk-meta">'+esc(t.part||'')+'</span><button data-week-move="up" data-week-id="'+t.id+'" '+(i===0?'disabled':'')+'>↑</button><button data-week-move="down" data-week-id="'+t.id+'" '+(i===items.length-1?'disabled':'')+'>↓</button><button data-week-remove="'+t.id+'">移除</button></div><div class="week-plan-fields"><label>组数<input type="number" min="1" max="30" value="'+cfg.sets+'" data-week-field="sets" data-week-id="'+t.id+'"></label><label>次数/秒<input type="number" min="1" max="999" value="'+cfg.reps+'" data-week-field="reps" data-week-id="'+t.id+'"></label><label>重量 kg<input type="number" min="0" max="999" step="0.5" value="'+cfg.weight+'" data-week-field="weight" data-week-id="'+t.id+'"></label><label>休息秒<input type="number" min="0" max="900" step="5" value="'+cfg.rest+'" data-week-field="rest" data-week-id="'+t.id+'"></label></div><label class="week-warmup"><input type="checkbox" data-week-field="warmup" data-week-id="'+t.id+'" '+(cfg.warmup?'checked':'')+'> 包含热身组</label></div>';}).join("");
+  }
+  function addCatalogToWeek(id){
+    var a=CATALOG.filter(function(x){return x.id===id;})[0];if(!a)return;
+    var t=db.tutorials.filter(function(x){return x.catalogId===a.id||(x.title===a.title&&x.part===a.part);})[0];
+    if(!t){t={id:uid(),catalogId:a.id,title:a.title,part:a.part,platform:"内置动作",equipment:a.equipment,type:a.type,guide:a.guide,frames:[],url:"",note:a.note,cover:"",createdAt:Date.now()};db.tutorials.push(t);}
+    var k=String(selectedWeekDay);db.weekPlan[k]=db.weekPlan[k]||[];
+    if(db.weekPlan[k].indexOf(t.id)>=0){toast("该动作已在"+weekDayNames[selectedWeekDay]+"计划中");return;}
+    db.weekPlan[k].push(t.id);weekSettings(selectedWeekDay,t.id);save();renderWeekPlan();renderLibrary();renderToday();renderMe();toast("已加入"+weekDayNames[selectedWeekDay]);
+  }
+  function copyWeekPlan(){
+    var raw=prompt("复制到星期几？输入 1–7（周一到周日）");if(raw===null)return;var n=Number(raw);
+    if(!Number.isInteger(n)||n<1||n>7){toast("请输入 1 到 7");return;}var target=n-1;if(target===selectedWeekDay){toast("目标日期与当前日期相同");return;}
+    db.weekPlan[String(target)]=JSON.parse(JSON.stringify(db.weekPlan[String(selectedWeekDay)]||[]));
+    db.weekRest[String(target)]=!!db.weekRest[String(selectedWeekDay)];
+    (db.weekPlan[String(target)]||[]).forEach(function(id){db.weekPlanSettings[weekKey(target,id)]=JSON.parse(JSON.stringify(weekSettings(selectedWeekDay,id)));});
+    save();renderWeekPlan();toast("已复制到"+weekDayNames[target]);
+  }
+  document.getElementById("btnAddWeekActions").addEventListener("click",function(){catalogKeyword="";document.getElementById("catalogSearch").value="";catalogPart="全部";document.getElementById("catalogEquipment").value="全部";document.getElementById("catalogType").value="全部";renderCatalog();show("catalog");});
+  document.getElementById("btnCopyWeek").addEventListener("click",copyWeekPlan);
+  document.getElementById("btnToggleRest").addEventListener("click",function(){db.weekRest[String(selectedWeekDay)]=!db.weekRest[String(selectedWeekDay)];save();renderWeekPlan();toast(db.weekRest[String(selectedWeekDay)]?"已设为休息日":"已恢复训练日");});
+  document.getElementById("btnUseWeekPlan").addEventListener("click",function(){var ids=db.weekRest[String(selectedWeekDay)]?[]:(db.weekPlan[String(selectedWeekDay)]||[]);if(!ids.length){toast("这一天没有可应用的训练动作");return;}db.plan[TODAY]=ids.slice();db.done[TODAY]=[];save();renderToday();toast("已将"+weekDayNames[selectedWeekDay]+"计划应用到今日清单");});
+  document.getElementById("weekDayChips").addEventListener("click",function(e){var b=e.target.closest("[data-weekday]");if(!b)return;selectedWeekDay=Number(b.getAttribute("data-weekday"));renderWeekPlan();});
+  document.getElementById("weekPlanList").addEventListener("change",function(e){var el=e.target.closest("[data-week-field]");if(!el)return;var id=el.getAttribute("data-week-id"),field=el.getAttribute("data-week-field"),cfg=weekSettings(selectedWeekDay,id);if(field==="warmup")cfg.warmup=el.checked;else cfg[field]=Math.max(0,Number(el.value)||0);save();});
+  document.getElementById("weekPlanList").addEventListener("click",function(e){var b=e.target.closest("[data-week-remove],[data-week-move]");if(!b)return;var id=b.getAttribute("data-week-id")||b.getAttribute("data-week-remove"),arr=db.weekPlan[String(selectedWeekDay)]||[];if(b.hasAttribute("data-week-remove")){db.weekPlan[String(selectedWeekDay)]=arr.filter(function(x){return x!==id;});delete db.weekPlanSettings[weekKey(selectedWeekDay,id)];save();renderWeekPlan();return;}var i=arr.indexOf(id),j=b.getAttribute("data-week-move")==="up"?i-1:i+1;if(i<0||j<0||j>=arr.length)return;var tmp=arr[i];arr[i]=arr[j];arr[j]=tmp;save();renderWeekPlan();});
+
   /* ---------- 今日 ---------- */
   function weekStats(){
     var now = new Date(), start = new Date(now);
@@ -719,6 +917,7 @@ details.help[open] summary{color:var(--accent)}
       .reduce(function(a,l){ return a + (l.sets*l.reps*l.weight); }, 0);
   }
   function renderToday(){
+    renderWeekPlan();
     var d = new Date();
     var wd = ["周日","周一","周二","周三","周四","周五","周六"][d.getDay()];
     document.getElementById("todayDate").textContent =
@@ -758,7 +957,7 @@ details.help[open] summary{color:var(--accent)}
         var done = doneList.indexOf(t.id)>=0;
         return '<div class="plan-item'+(done?" done":"")+'" data-plan="'+t.id+'">'
           + '<button class="check" data-check="'+t.id+'" aria-label="完成"><svg class="ic"><use href="#i-check"/></svg></button>'
-          + '<div class="p-main"><div class="p-name">'+esc(t.title)+'</div>'
+          + '<img class="p-cover" src="'+coverFor(t)+'" alt="" loading="lazy"><div class="p-main"><div class="p-name">'+esc(t.title)+'</div>'
           + '<div class="p-meta"><span class="tag" style="--h:'+(HUE[t.part]||90)+'">'+esc(t.part)+'</span>'
           + (t.equipment ? '<span class="tag plain">'+esc(t.equipment)+'</span>' : '')
           + (t.note ? '<span class="muted" style="font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px">'+esc(t.note)+'</span>' : '')
@@ -783,6 +982,39 @@ details.help[open] summary{color:var(--accent)}
       + '<button class="mini-btn dz" data-dellog="'+l.id+'" aria-label="删除"><svg class="ic ic-s"><use href="#i-x"/></svg></button>'
       + '</div>';
   }
+
+  /* ---------- 动作封面：本地 SVG 示意图，离线可用 ---------- */
+  function coverKind(a){
+    var n=((a.title||"")+" "+(a.en||"")+" "+(a.guide||"")).toLowerCase();
+    if(/热身|拉伸|活动度|旋转|开合|动态|伸展|mobility|stretch|warm/.test(n))return "stretch";
+    if(/平板|卷腹|举腿|死虫|鸟狗|腹|核心|plank|crunch|dead bug/.test(n))return "core";
+    if(/跑|跳|骑|划船机|椭圆|登山机|战绳|快走|有氧|jump|run|cycle|rowing/.test(n))return "cardio";
+    if(/深蹲|弓步|腿举|腿屈|腿弯|臀桥|提踵|蹬腿|squat|lunge|leg press/.test(n))return "legs";
+    if(/硬拉|划船|下拉|引体|反向飞鸟|deadlift|row|pulldown|pull.?up/.test(n))return "pull";
+    if(/推举|肩推|侧平举|飞鸟|卧推|俯卧撑|臂屈伸|推胸|press|fly|push.?up/.test(n))return "push";
+    if(/弯举|下压|臂屈|curl|triceps|biceps/.test(n))return "arms";
+    return a.part==="热身"?"stretch":a.part==="腿"||a.part==="臀"?"legs":a.part==="背"?"pull":a.part==="胸"||a.part==="肩"?"push":a.part==="核心"?"core":a.part==="有氧"?"cardio":"general";
+  }
+  function coverSvg(a){
+    var kind=coverKind(a),eq=(a.equipment||"").toLowerCase();
+    var gear="";
+    if(/杠铃|barbell/.test(eq))gear='<path d="M48 35H172M58 25V45M68 22V48M152 22V48M162 25V45" stroke="#D7E2D4" stroke-width="5" stroke-linecap="round"/><path d="M48 35H172" stroke="#C4F542" stroke-width="3"/>';
+    else if(/哑铃|dumbbell/.test(eq))gear='<path d="M70 30V48M80 26V52M140 26V52M150 30V48M80 39H140" stroke="#D7E2D4" stroke-width="6" stroke-linecap="round"/>';
+    else if(/壶铃|kettlebell/.test(eq))gear='<path d="M132 47c-2-16 28-16 26 0" fill="none" stroke="#D7E2D4" stroke-width="5"/><path d="M126 49q18-13 36 0l-3 20q-15 12-30 0z" fill="#C4F542"/>';
+    else if(/绳索|龙门|固定器械|器械|machine|cable/.test(eq))gear='<path d="M174 18V104M165 18H183M174 43L150 60" stroke="#D7E2D4" stroke-width="4" stroke-linecap="round"/><circle cx="150" cy="60" r="5" fill="#C4F542"/>';
+    else if(/弹力带|band/.test(eq))gear='<path d="M68 38Q112 4 156 38" fill="none" stroke="#C4F542" stroke-width="5" stroke-linecap="round"/>';
+    var person="";
+    if(kind==="push") person='<path d="M93 57Q108 49 123 57L132 82 119 91 97 86 84 72Z" fill="#C4F542"/><circle cx="108" cy="43" r="10" fill="#E6ECE4"/><path d="M91 61L75 39 64 30M124 61L141 39 153 30M100 86L91 111 80 119M119 87L128 110 139 118" fill="none" stroke="#E6ECE4" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>';
+    else if(kind==="pull") person='<path d="M98 54Q111 46 124 54L130 83 111 93 91 82Z" fill="#C4F542"/><circle cx="111" cy="40" r="10" fill="#E6ECE4"/><path d="M99 56L84 34 80 18M123 56L138 34 142 18M100 87L94 111 85 119M120 87L127 111 137 119" fill="none" stroke="#E6ECE4" stroke-width="8" stroke-linecap="round"/>';
+    else if(kind==="legs") person='<path d="M96 51Q112 44 128 54L126 76 95 76Z" fill="#C4F542"/><circle cx="111" cy="37" r="10" fill="#E6ECE4"/><path d="M99 57L82 73 88 94 74 111M124 57L140 72 132 91 148 109M99 58L85 44 73 49M124 58L139 43 150 48" fill="none" stroke="#E6ECE4" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>';
+    else if(kind==="core") person='<path d="M65 80Q90 59 121 67L148 76 143 89 111 85 81 96Z" fill="#C4F542"/><circle cx="151" cy="72" r="9" fill="#E6ECE4"/><path d="M80 91L65 111M105 85L98 108M119 83L136 104" fill="none" stroke="#E6ECE4" stroke-width="8" stroke-linecap="round"/>';
+    else if(kind==="cardio") person='<path d="M96 55Q111 47 124 57L119 82 96 84Z" fill="#C4F542"/><circle cx="111" cy="40" r="10" fill="#E6ECE4"/><path d="M98 59L82 76 67 72M123 59L140 70 153 61M101 82L87 101 72 112M117 82L132 94 145 112" fill="none" stroke="#E6ECE4" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>';
+    else if(kind==="stretch") person='<path d="M99 57Q113 48 126 58L124 84 98 84Z" fill="#C4F542"/><circle cx="112" cy="41" r="10" fill="#E6ECE4"/><path d="M100 60L80 46 61 46M124 60L143 38 157 24M102 83L91 111 78 117M120 83L135 108 151 114" fill="none" stroke="#E6ECE4" stroke-width="8" stroke-linecap="round"/>';
+    else person='<path d="M99 56Q112 48 125 57L126 84 97 84Z" fill="#C4F542"/><circle cx="112" cy="40" r="10" fill="#E6ECE4"/><path d="M100 60L83 78 70 68M124 60L141 76 155 69M103 84L93 111 82 118M120 84L132 110 145 117" fill="none" stroke="#E6ECE4" stroke-width="8" stroke-linecap="round"/>';
+    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="220" height="140" viewBox="0 0 220 140"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#25332A"/><stop offset="1" stop-color="#101719"/></linearGradient><radialGradient id="r"><stop stop-color="#C4F542" stop-opacity=".18"/><stop offset="1" stop-color="#C4F542" stop-opacity="0"/></radialGradient></defs><rect width="220" height="140" rx="15" fill="url(#g)"/><circle cx="174" cy="32" r="70" fill="url(#r)"/><path d="M12 119H208" stroke="#405044" stroke-width="1" stroke-dasharray="3 5"/>'+gear+person+'<text x="14" y="130" fill="#91A18D" font-size="8" font-family="Arial,sans-serif" letter-spacing="1.4">RANLIAN · MOVE</text></svg>';
+    return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
+  }
+  function coverFor(a){return a&&a.cover?a.cover:coverSvg(a||{});}
 
   /* ---------- 动作库 ---------- */
   var filterPart = "全部", keyword = "";
@@ -809,16 +1041,17 @@ details.help[open] summary{color:var(--accent)}
     box.innerHTML = list.slice().reverse().map(function(t){
       var inPlan = (db.plan[TODAY]||[]).indexOf(t.id)>=0;
       return '<div class="tut" style="--h:'+(HUE[t.part]||90)+'">'
-        + '<div class="tut-top"><div class="tut-title">'+esc(t.title)+'</div>'
-        + '<div style="display:flex;gap:6px;flex:0 0 auto">'
+        + '<div class="tut-top"><img class="tut-cover" src="'+coverFor(t)+'" alt="'+esc(t.title)+'动作示意" loading="lazy"><div style="flex:1;min-width:0"><div class="tut-title">'+esc(t.title)+'</div>'
+        + '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">'
         + '<span class="tag" style="--h:'+(HUE[t.part]||90)+'">'+esc(t.part)+'</span>'
-        + '</div></div>'
+        + '</div></div></div>'
         + '<div class="tut-meta">'+(t.equipment?'<span class="tag plain">器械：'+esc(t.equipment)+'</span>':'')+(t.type?'<span class="tag plain">'+esc(t.type)+'</span>':'')+'</div>'
         + (t.guide ? '<div class="tut-note">要领：'+esc(t.guide)+'</div>' : '')
         + (t.note ? '<div class="tut-note">备注：'+esc(t.note)+'</div>' : '')
         + '<div class="tut-foot">'
         + '<button class="act '+(inPlan?"":"primary")+'" data-addplan="'+t.id+'">'
         + (inPlan ? '<svg class="ic"><use href="#i-check"/></svg> 已在今日' : '<svg class="ic"><use href="#i-plus"/></svg> 加入今日')+'</button>'
+        + '<button class="act" data-add-week-custom="'+t.id+'">加入'+weekDayNames[selectedWeekDay]+'</button>'
         + (t.url ? '<a class="act" href="'+esc(t.url)+'" target="_blank" rel="noopener"><svg class="ic"><use href="#i-play"/></svg> 观看</a>' : '')
         + '<button class="act ghost dz" data-deltut="'+t.id+'" aria-label="删除"><svg class="ic"><use href="#i-trash"/></svg></button>'
         + '</div></div>';
@@ -1021,41 +1254,174 @@ details.help[open] summary{color:var(--accent)}
     {id:"r04",title:"动感单车",part:"有氧",equipment:"固定器械",type:"有氧/体能",guide:"调整座椅高度，踩踏过程膝盖保持自然轨迹，循序渐进加阻力。",note:"建议：10–20分钟"},
     {id:"r05",title:"跑步机快走",part:"有氧",equipment:"固定器械",type:"有氧/体能",guide:"保持自然步幅和直立姿势，先低速热身再逐渐提速。",note:"建议：10–20分钟"}
   ];
+
+  // 扩展动作目录：参考 openGym 的部位、器械、动作类型与说明字段组织方式，中文说明独立编写。
+  CATALOG = CATALOG.concat([
+    {id:"x001",title:"肩关节外旋激活",part:"热身",equipment:"弹力带",type:"拉伸/活动度",guide:"肘部贴近身体，向外旋转前臂，肩胛保持稳定。",note:"每侧12–15次",en:"band shoulder external rotation"},
+    {id:"x002",title:"弹力带拉开",part:"热身",equipment:"弹力带",type:"拉伸/活动度",guide:"双手与肩同宽握带，向两侧拉开，控制肩胛后缩。",note:"12–20次",en:"band pull apart"},
+    {id:"x003",title:"墙天使",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"背部贴墙，手臂沿墙面缓慢上滑下移，不耸肩。",note:"8–12次",en:"wall angel"},
+    {id:"x004",title:"靠墙滑手",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"前臂贴墙，向上滑动至舒适范围，保持肋骨收紧。",note:"10–12次",en:"wall slide"},
+    {id:"x005",title:"肩胛绕环",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"肩胛向上、向前、向下、向后依次移动，动作缓慢。",note:"每方向8圈",en:"scapular circles"},
+    {id:"x006",title:"手腕绕环",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"双手轻握拳，手腕顺逆时针缓慢绕环。",note:"每方向10圈",en:"wrist circles"},
+    {id:"x007",title:"手腕前后摆动",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"手掌撑墙或四点跪姿，轻柔前后移动身体调整腕部角度。",note:"10–15次",en:"wrist rocks"},
+    {id:"x008",title:"踝关节顶墙活动",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"脚跟踩稳，膝盖缓慢向墙方向移动，保持脚尖朝前。",note:"每侧10次",en:"ankle dorsiflexion mobilization"},
+    {id:"x009",title:"弓步压髋",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"半跪姿收紧臀部，骨盆轻微后倾并向前移动髋部。",note:"每侧20秒",en:"half kneeling hip flexor stretch"},
+    {id:"x010",title:"世界最伟大拉伸",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"弓步后双手撑地，胸椎向前腿一侧旋转，再换边。",note:"每侧5次",en:"world's greatest stretch"},
+    {id:"x011",title:"深蹲底部停留",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"双脚稳定下蹲至舒适深度，轻柔活动髋踝并保持脚跟着地。",note:"20–30秒",en:"deep squat hold"},
+    {id:"x012",title:"青蛙式髋部活动",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"四点跪姿双膝分开，髋部缓慢前后移动。",note:"10–12次",en:"frog rock back"},
+    {id:"x013",title:"90/90髋部转换",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"坐姿双膝屈曲左右倒向两侧，躯干保持挺直。",note:"每侧8次",en:"90 90 hip switches"},
+    {id:"x014",title:"侧弓步移动",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"重心移向一侧屈膝，另一腿伸直，左右交替。",note:"每侧8次",en:"lateral lunge mobility"},
+    {id:"x015",title:"原地提膝走",part:"热身",equipment:"自重",type:"有氧/体能",guide:"交替抬膝并自然摆臂，脚步轻快，逐步提升心率。",note:"45–60秒",en:"marching in place"},
+    {id:"x016",title:"交替摸脚尖",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"双脚略宽站立，交替用手触碰对侧脚尖，保持动作可控。",note:"每侧10次",en:"alternating toe touch"},
+    {id:"x017",title:"小腿动态弹动",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"双脚前后站立，膝盖轻微屈伸，动态活动小腿与跟腱。",note:"每侧15次",en:"dynamic calf pulse"},
+    {id:"x018",title:"髋铰链练习",part:"热身",equipment:"自重",type:"复合动作",guide:"双手放在髋部，臀部向后推，脊柱保持中立后站起。",note:"12次",en:"hip hinge drill"},
+    {id:"x019",title:"俯身Y-T-W",part:"热身",equipment:"自重",type:"拉伸/活动度",guide:"俯身或俯卧，依次摆出Y、T、W形手臂，肩胛主动控制。",note:"每姿势6–8次",en:"prone YTW"},
+    {id:"x020",title:"弹力带肩胛下压",part:"热身",equipment:"弹力带",type:"复合动作",guide:"双臂伸直握带，肩胛向下向后收紧，避免弯肘代偿。",note:"12–15次",en:"band scapular depression"},
+    {id:"x021",title:"史密斯机卧推",part:"胸",equipment:"固定器械",type:"复合动作",guide:"肩胛稳定并踩实双脚，控制杠铃下降至胸前再推起。",note:"3组 × 8–12次",en:"smith machine bench press"},
+    {id:"x022",title:"史密斯机上斜卧推",part:"胸",equipment:"固定器械",type:"复合动作",guide:"凳面调至上斜，握距适中，沿固定轨迹推起并控制下放。",note:"3组 × 8–12次",en:"smith incline bench press"},
+    {id:"x023",title:"器械胸推",part:"胸",equipment:"固定器械",type:"复合动作",guide:"肩胛贴靠背垫，手柄从胸侧向前推出，避免耸肩。",note:"3组 × 8–12次",en:"machine chest press"},
+    {id:"x024",title:"器械上斜推胸",part:"胸",equipment:"固定器械",type:"复合动作",guide:"调整座椅使手柄位于上胸附近，平稳推出并缓慢回程。",note:"3组 × 10–12次",en:"incline chest press machine"},
+    {id:"x025",title:"上斜杠铃卧推",part:"胸",equipment:"杠铃",type:"复合动作",guide:"肩胛后缩，杠铃控制下降至上胸附近，再沿稳定路径推起。",note:"3组 × 6–10次",en:"barbell incline bench press"},
+    {id:"x026",title:"地板哑铃卧推",part:"胸",equipment:"哑铃",type:"复合动作",guide:"仰卧地面屈膝，肘部轻触地面后推起哑铃。",note:"3组 × 8–12次",en:"dumbbell floor press"},
+    {id:"x027",title:"窄握杠铃卧推",part:"胸",equipment:"杠铃",type:"复合动作",guide:"握距略窄于肩宽，肘部靠近身体，控制杠铃下降与推起。",note:"3组 × 6–10次",en:"close grip bench press"},
+    {id:"x028",title:"低位绳索夹胸",part:"胸",equipment:"龙门架/绳索",type:"孤立动作",guide:"滑轮调低，双手沿弧线向上向内合拢，避免耸肩。",note:"3组 × 12–15次",en:"low cable fly"},
+    {id:"x029",title:"高位绳索夹胸",part:"胸",equipment:"龙门架/绳索",type:"孤立动作",guide:"滑轮调高，双手向前下方合拢，胸部主动收缩。",note:"3组 × 12–15次",en:"high cable fly"},
+    {id:"x030",title:"蝴蝶机夹胸",part:"胸",equipment:"固定器械",type:"孤立动作",guide:"背部贴靠垫，肘部微屈，将双臂向身体中线合拢。",note:"3组 × 10–15次",en:"pec deck fly"},
+    {id:"x031",title:"弹力带胸推",part:"胸",equipment:"弹力带",type:"复合动作",guide:"弹力带固定在身后，核心收紧，双手向前推出。",note:"3组 × 12–15次",en:"band chest press"},
+    {id:"x032",title:"上斜俯卧撑",part:"胸",equipment:"自重",type:"复合动作",guide:"双手撑在稳固高台，身体保持直线，胸部靠近支撑面。",note:"3组 × 10–15次",en:"incline push up"},
+    {id:"x033",title:"胸托哑铃划船",part:"背",equipment:"哑铃",type:"复合动作",guide:"胸部贴靠上斜凳，肘部向后拉起哑铃，避免借力。",note:"3组 × 8–12次",en:"chest supported dumbbell row"},
+    {id:"x034",title:"胸托划船机",part:"背",equipment:"固定器械",type:"复合动作",guide:"胸部贴垫，肩胛后收并拉动把手，缓慢伸展手臂。",note:"3组 × 8–12次",en:"chest supported row machine"},
+    {id:"x035",title:"宽握高位下拉",part:"背",equipment:"固定器械",type:"复合动作",guide:"宽握横杆，先沉肩再将横杆拉向上胸，避免大幅后仰。",note:"3组 × 8–12次",en:"wide grip lat pulldown"},
+    {id:"x036",title:"反手高位下拉",part:"背",equipment:"固定器械",type:"复合动作",guide:"掌心朝向自己，肩胛下沉，肘部向身体两侧下拉。",note:"3组 × 8–12次",en:"reverse grip lat pulldown"},
+    {id:"x037",title:"窄握坐姿划船",part:"背",equipment:"龙门架/绳索",type:"复合动作",guide:"使用窄握把，躯干稳定，肘部贴近身体向后拉。",note:"3组 × 10–12次",en:"close grip seated cable row"},
+    {id:"x038",title:"单臂绳索划船",part:"背",equipment:"龙门架/绳索",type:"复合动作",guide:"单侧握把向腰部拉动，躯干不旋转，左右交替。",note:"3组 × 每侧10–12次",en:"single arm cable row"},
+    {id:"x039",title:"T杠划船",part:"背",equipment:"杠铃",type:"复合动作",guide:"髋部后移俯身，保持脊柱中立，将把手拉向躯干。",note:"3组 × 8–12次",en:"t bar row"},
+    {id:"x040",title:"杠铃反手划船",part:"背",equipment:"杠铃",type:"复合动作",guide:"反手握杠，髋部后移，杠铃拉向下腹部并控制下放。",note:"3组 × 8–10次",en:"underhand barbell row"},
+    {id:"x041",title:"辅助反手引体向上",part:"背",equipment:"固定器械",type:"复合动作",guide:"反手握杠，先沉肩再拉起身体，控制下降过程。",note:"3组 × 6–10次",en:"assisted chin up"},
+    {id:"x042",title:"直臂悬垂",part:"背",equipment:"自重",type:"孤立动作",guide:"双手握杠自然悬垂，肩部保持主动控制，不要完全松懈。",note:"3组 × 15–30秒",en:"active dead hang"},
+    {id:"x043",title:"哑铃耸肩",part:"背",equipment:"哑铃",type:"孤立动作",guide:"双手持哑铃，肩部垂直向上耸起，停顿后缓慢放下。",note:"3组 × 10–15次",en:"dumbbell shrug"},
+    {id:"x044",title:"绳索面拉至额头",part:"背",equipment:"龙门架/绳索",type:"孤立动作",guide:"绳索拉向额头，肘部外展，肩胛后缩并控制回程。",note:"3组 × 12–15次",en:"rope face pull"},
+    {id:"x045",title:"前蹲",part:"腿",equipment:"杠铃",type:"复合动作",guide:"杠铃置于前三角肌，肘部抬高，保持躯干直立完成深蹲。",note:"3组 × 5–8次",en:"barbell front squat"},
+    {id:"x046",title:"史密斯机深蹲",part:"腿",equipment:"固定器械",type:"复合动作",guide:"双脚站位适中，核心收紧，沿稳定轨迹下蹲并站起。",note:"3组 × 8–12次",en:"smith machine squat"},
+    {id:"x047",title:"哈克深蹲",part:"腿",equipment:"固定器械",type:"复合动作",guide:"背部贴垫，脚掌踩稳踏板，屈膝下蹲后平稳推起。",note:"3组 × 8–12次",en:"hack squat"},
+    {id:"x048",title:"相扑深蹲",part:"腿",equipment:"自重",type:"复合动作",guide:"双脚宽于肩，脚尖外展，髋膝同步弯曲后站起。",note:"3组 × 12–15次",en:"sumo squat"},
+    {id:"x049",title:"行走弓步",part:"腿",equipment:"自重",type:"复合动作",guide:"向前迈步下蹲，后腿跟进再迈出下一步，躯干保持稳定。",note:"3组 × 每侧10步",en:"walking lunge"},
+    {id:"x050",title:"反向弓步",part:"腿",equipment:"哑铃",type:"复合动作",guide:"单脚向后迈步下蹲，前脚踩稳，借前腿发力回到站姿。",note:"3组 × 每侧8–12次",en:"reverse lunge"},
+    {id:"x051",title:"台阶踏步",part:"腿",equipment:"自重",type:"复合动作",guide:"一脚踩上稳固台阶，以前腿发力站上，再控制下台。",note:"3组 × 每侧10次",en:"step up"},
+    {id:"x052",title:"坐姿腿弯举",part:"腿",equipment:"固定器械",type:"孤立动作",guide:"调整膝关节与器械转轴对齐，屈膝卷起并缓慢还原。",note:"3组 × 10–15次",en:"seated leg curl"},
+    {id:"x053",title:"单腿罗马尼亚硬拉",part:"腿",equipment:"哑铃",type:"复合动作",guide:"单脚支撑，髋部向后折叠，另一腿向后伸展保持平衡。",note:"3组 × 每侧8–10次",en:"single leg romanian deadlift"},
+    {id:"x054",title:"哑铃直腿硬拉",part:"腿",equipment:"哑铃",type:"复合动作",guide:"膝盖微屈，髋部向后移动，哑铃贴近腿部下放。",note:"3组 × 10–12次",en:"dumbbell stiff leg deadlift"},
+    {id:"x055",title:"坐姿提踵",part:"腿",equipment:"固定器械",type:"孤立动作",guide:"前脚掌踩踏板，脚跟下沉后充分踮起，顶端短暂停顿。",note:"3组 × 12–20次",en:"seated calf raise"},
+    {id:"x056",title:"腿举窄距",part:"腿",equipment:"固定器械",type:"复合动作",guide:"双脚窄距放置踏板，控制屈膝深度，避免膝盖内扣。",note:"3组 × 10–12次",en:"narrow stance leg press"},
+    {id:"x057",title:"西西深蹲",part:"腿",equipment:"自重",type:"复合动作",guide:"保持髋部伸展，膝盖向前移动并控制身体后倾幅度。",note:"2–3组 × 8–12次",en:"sissy squat"},
+    {id:"x058",title:"反向北欧腿弯举",part:"腿",equipment:"自重",type:"孤立动作",guide:"跪姿固定小腿，身体从膝部缓慢向后倾，再用大腿前侧拉回。",note:"2组 × 5–8次",en:"reverse nordic curl"},
+    {id:"x059",title:"北欧腿弯举",part:"腿",equipment:"自重",type:"孤立动作",guide:"固定脚踝，身体保持直线缓慢前倾，用腿后侧控制下降。",note:"2组 × 4–8次",en:"nordic hamstring curl"},
+    {id:"x060",title:"杠铃早安式",part:"臀",equipment:"杠铃",type:"复合动作",guide:"杠铃稳定放在上背，膝微屈，髋部向后折叠再站起。",note:"3组 × 8–10次",en:"barbell good morning"},
+    {id:"x061",title:"单腿臀桥",part:"臀",equipment:"自重",type:"复合动作",guide:"仰卧一腿抬起，另一脚踩地，以支撑侧臀部抬起髋部。",note:"3组 × 每侧10–12次",en:"single leg glute bridge"},
+    {id:"x062",title:"青蛙泵",part:"臀",equipment:"自重",type:"孤立动作",guide:"仰卧脚掌相对、膝盖外展，臀部抬起并在顶端收紧。",note:"3组 × 20次",en:"frog pump"},
+    {id:"x063",title:"弹力带臀推",part:"臀",equipment:"弹力带",type:"复合动作",guide:"弹力带置于髋部或膝上，肩背支撑，向上伸髋并控制下放。",note:"3组 × 12–15次",en:"banded hip thrust"},
+    {id:"x064",title:"绳索髋外展",part:"臀",equipment:"龙门架/绳索",type:"孤立动作",guide:"脚踝连接低位拉力器，腿向外侧抬起，骨盆保持稳定。",note:"3组 × 每侧12–15次",en:"cable hip abduction"},
+    {id:"x065",title:"绳索髋内收",part:"臀",equipment:"龙门架/绳索",type:"孤立动作",guide:"腿从外侧向身体中线收回，控制幅度，不转动骨盆。",note:"3组 × 每侧12–15次",en:"cable hip adduction"},
+    {id:"x066",title:"侧卧直腿抬高",part:"臀",equipment:"自重",type:"孤立动作",guide:"侧卧下侧腿微屈，上侧腿伸直抬起，脚尖朝前。",note:"3组 × 每侧12–15次",en:"side lying hip abduction"},
+    {id:"x067",title:"跪姿髋伸展",part:"臀",equipment:"弹力带",type:"孤立动作",guide:"四点跪姿，屈膝向后上方抬腿，避免腰椎代偿。",note:"3组 × 每侧12次",en:"quadruped hip extension"},
+    {id:"x068",title:"阿诺德推举",part:"肩",equipment:"哑铃",type:"复合动作",guide:"哑铃置于胸前掌心朝向自己，推举时旋转至掌心向前。",note:"3组 × 8–12次",en:"arnold press"},
+    {id:"x069",title:"坐姿哑铃肩推",part:"肩",equipment:"哑铃",type:"复合动作",guide:"背部有支撑，核心收紧，将哑铃从肩部上推并控制下放。",note:"3组 × 8–12次",en:"seated dumbbell shoulder press"},
+    {id:"x070",title:"器械肩推",part:"肩",equipment:"固定器械",type:"复合动作",guide:"调整座椅使把手位于肩部附近，垂直推起后缓慢还原。",note:"3组 × 8–12次",en:"machine shoulder press"},
+    {id:"x071",title:"绳索侧平举",part:"肩",equipment:"龙门架/绳索",type:"孤立动作",guide:"低位绳索从身体侧方抬臂至肩高附近，避免耸肩。",note:"3组 × 12–15次",en:"cable lateral raise"},
+    {id:"x072",title:"单臂哑铃侧平举",part:"肩",equipment:"哑铃",type:"孤立动作",guide:"一手扶稳支撑，另一臂沿侧方抬起，左右交替。",note:"3组 × 每侧12–15次",en:"single arm dumbbell lateral raise"},
+    {id:"x073",title:"俯身绳索反向飞鸟",part:"肩",equipment:"龙门架/绳索",type:"孤立动作",guide:"双手交叉握低位绳索，向两侧打开，控制肩胛位置。",note:"3组 × 12–15次",en:"cable rear delt fly"},
+    {id:"x074",title:"俯身反向蝴蝶机",part:"肩",equipment:"固定器械",type:"孤立动作",guide:"胸部贴垫，双臂向外后方打开，避免耸肩。",note:"3组 × 12–15次",en:"reverse pec deck"},
+    {id:"x075",title:"杠铃耸肩",part:"肩",equipment:"杠铃",type:"孤立动作",guide:"双手握杠，肩部垂直上提，避免绕肩或用手臂弯举。",note:"3组 × 10–15次",en:"barbell shrug"},
+    {id:"x076",title:"直立划船",part:"肩",equipment:"杠铃",type:"复合动作",guide:"握距略宽于肩，杠铃沿身体前方上提至舒适高度。",note:"2–3组 × 10–12次",en:"upright row"},
+    {id:"x077",title:"弹力带外旋",part:"肩",equipment:"弹力带",type:"孤立动作",guide:"肘部夹在身体两侧，前臂向外旋转，动作缓慢可控。",note:"3组 × 每侧12–15次",en:"band external rotation"},
+    {id:"x078",title:"牧师凳弯举",part:"手臂",equipment:"固定器械",type:"孤立动作",guide:"上臂贴紧斜垫，屈肘举起把手，缓慢伸展至舒适范围。",note:"3组 × 10–12次",en:"preacher curl"},
+    {id:"x079",title:"上斜哑铃弯举",part:"手臂",equipment:"哑铃",type:"孤立动作",guide:"背靠上斜凳，手臂自然下垂，屈肘弯举并控制下降。",note:"3组 × 10–12次",en:"incline dumbbell curl"},
+    {id:"x080",title:"绳索弯举",part:"手臂",equipment:"龙门架/绳索",type:"孤立动作",guide:"肘部固定在身体两侧，向上弯举绳索并缓慢还原。",note:"3组 × 10–15次",en:"cable biceps curl"},
+    {id:"x081",title:"反握弯举",part:"手臂",equipment:"杠铃",type:"孤立动作",guide:"掌心朝下握杠，保持手腕中立，屈肘举起并控制下放。",note:"3组 × 10–12次",en:"reverse curl"},
+    {id:"x082",title:"绳索过顶臂屈伸",part:"手臂",equipment:"龙门架/绳索",type:"孤立动作",guide:"背对滑轮，双手从头后伸肘向前上方伸展。",note:"3组 × 10–15次",en:"overhead cable triceps extension"},
+    {id:"x083",title:"仰卧杠铃臂屈伸",part:"手臂",equipment:"杠铃",type:"孤立动作",guide:"仰卧持杠，屈肘将杠铃向额头后方下放，再伸肘推起。",note:"3组 × 8–12次",en:"lying triceps extension"},
+    {id:"x084",title:"反手绳索下压",part:"手臂",equipment:"龙门架/绳索",type:"孤立动作",guide:"掌心朝上握把，肘部固定，向下伸肘后缓慢回程。",note:"3组 × 12–15次",en:"reverse grip triceps pushdown"},
+    {id:"x085",title:"凳上反向臂屈伸",part:"手臂",equipment:"自重",type:"复合动作",guide:"双手支撑稳固凳沿，屈肘下降至肩部舒适范围再推起。",note:"2–3组 × 8–12次",en:"bench dip"},
+    {id:"x086",title:"悬垂举膝",part:"核心",equipment:"自重",type:"孤立动作",guide:"双手悬垂，收紧腹部将膝盖抬向胸前，避免摆动。",note:"3组 × 8–12次",en:"hanging knee raise"},
+    {id:"x087",title:"悬垂举腿",part:"核心",equipment:"自重",type:"孤立动作",guide:"悬垂保持身体稳定，双腿抬起至可控高度后缓慢下降。",note:"3组 × 6–10次",en:"hanging leg raise"},
+    {id:"x088",title:"健腹轮 rollout",part:"核心",equipment:"健腹轮",type:"复合动作",guide:"跪姿握轮向前滚动，保持腹部收紧，控制伸展距离后收回。",note:"3组 × 6–10次",en:"ab wheel rollout"},
+    {id:"x089",title:"绳索卷腹",part:"核心",equipment:"龙门架/绳索",type:"孤立动作",guide:"跪姿握绳置于头侧，主动卷曲躯干，不用手臂下拉。",note:"3组 × 10–15次",en:"kneeling cable crunch"},
+    {id:"x090",title:"鸟狗式划船",part:"核心",equipment:"哑铃",type:"复合动作",guide:"四点跪姿单手持轻哑铃，保持骨盆稳定完成单臂划船。",note:"3组 × 每侧8次",en:"bird dog row"},
+    {id:"x091",title:"空心支撑",part:"核心",equipment:"自重",type:"孤立动作",guide:"仰卧抬肩与双腿，腰背贴地，保持腹部持续收紧。",note:"3组 × 15–30秒",en:"hollow body hold"},
+    {id:"x092",title:"死虫式弹力带下压",part:"核心",equipment:"弹力带",type:"复合动作",guide:"仰卧双手拉紧弹力带，交替伸展对侧手脚，腰背保持稳定。",note:"3组 × 每侧8–10次",en:"dead bug band pulldown"},
+    {id:"x093",title:"Pallof抗旋转推",part:"核心",equipment:"龙门架/绳索",type:"复合动作",guide:"侧对拉力器，双手从胸前向前推出，抵抗躯干旋转。",note:"3组 × 每侧10–12次",en:"pallof press"},
+    {id:"x094",title:"农夫行走",part:"核心",equipment:"哑铃",type:"有氧/体能",guide:"双手提重物，肩胛稳定，核心收紧，以平稳步伐行走。",note:"3组 × 20–40米",en:"farmer walk"},
+    {id:"x095",title:"侧向平板支撑抬髋",part:"核心",equipment:"自重",type:"孤立动作",guide:"侧平板支撑位缓慢下沉髋部再抬起，保持身体侧向稳定。",note:"3组 × 每侧10–12次",en:"side plank hip dips"},
+    {id:"x096",title:"椭圆机",part:"有氧",equipment:"固定器械",type:"有氧/体能",guide:"双脚踩稳踏板，配合扶手自然摆动，保持连续均匀节奏。",note:"10–25分钟",en:"elliptical trainer"},
+    {id:"x097",title:"划船机",part:"有氧",equipment:"固定器械",type:"有氧/体能",guide:"先蹬腿再后仰拉手，回程按手臂、躯干、腿部顺序还原。",note:"8–20分钟",en:"rowing machine"},
+    {id:"x098",title:"登山机",part:"有氧",equipment:"固定器械",type:"有氧/体能",guide:"双手扶稳把手，交替踩踏，保持躯干稳定和均匀呼吸。",note:"8–15分钟",en:"stair climber"},
+    {id:"x099",title:"户外慢跑",part:"有氧",equipment:"无器械",type:"有氧/体能",guide:"选择可持续的轻松配速，步幅自然，保持稳定呼吸。",note:"15–30分钟",en:"outdoor jogging"},
+    {id:"x100",title:"间歇快走",part:"有氧",equipment:"无器械",type:"有氧/体能",guide:"快走与舒适步行交替进行，逐步调整速度，不突然冲刺。",note:"15–25分钟",en:"interval brisk walking"},
+    {id:"x101",title:"自行车骑行",part:"有氧",equipment:"自行车",type:"有氧/体能",guide:"调整座椅高度，保持稳定踏频，阻力以可持续为宜。",note:"20–40分钟",en:"cycling"},
+    {id:"x102",title:"跳箱",part:"有氧",equipment:"跳箱",type:"有氧/体能",guide:"选择较低高度，髋膝协同发力跳上，稳定落地后走下。",note:"3组 × 5–8次",en:"box jump"},
+    {id:"x103",title:"战绳交替甩动",part:"有氧",equipment:"战绳",type:"有氧/体能",guide:"膝髋微屈，双手交替上下甩绳，保持躯干稳定。",note:"6组 × 20秒",en:"alternating battle rope"},
+    {id:"x104",title:"壶铃摆荡",part:"全身",equipment:"壶铃",type:"复合动作",guide:"髋部快速伸展带动壶铃摆起，手臂放松，脊柱保持中立。",note:"3组 × 12–15次",en:"kettlebell swing"},
+    {id:"x105",title:"壶铃高脚杯深蹲",part:"全身",equipment:"壶铃",type:"复合动作",guide:"壶铃置于胸前，保持躯干稳定完成深蹲并站起。",note:"3组 × 10–12次",en:"kettlebell goblet squat"},
+    {id:"x106",title:"哑铃推蹲",part:"全身",equipment:"哑铃",type:"复合动作",guide:"持哑铃完成深蹲，站起时顺势推举至头顶，控制回程。",note:"3组 × 8–10次",en:"dumbbell thruster"},
+    {id:"x107",title:"熊爬",part:"全身",equipment:"自重",type:"有氧/体能",guide:"四点支撑膝盖离地，手脚交替向前移动，保持躯干稳定。",note:"3组 × 20–30秒",en:"bear crawl"},
+    {id:"x108",title:"土耳其起立",part:"全身",equipment:"壶铃",type:"复合动作",guide:"单手持轻壶铃，按手撑地、抬髋、弓步站起的顺序完成。",note:"每侧2–3次",en:"turkish get up"},
+    {id:"x109",title:"交替侧弓步",part:"全身",equipment:"自重",type:"复合动作",guide:"左右交替迈步侧蹲，臀部向后坐，支撑脚掌保持稳定。",note:"3组 × 每侧8次",en:"alternating lateral lunge"},
+  ]);
   var catalogPart="全部", catalogKeyword="";
   function renderCatalog(){
-    var cats=["全部","热身","胸","背","腿","臀","肩","手臂","核心","有氧"];
+    var cats=["全部","热身","胸","背","腿","臀","肩","手臂","核心","有氧","全身"];
     document.getElementById("catalogChips").innerHTML=cats.map(function(c){return '<button class="chip'+(catalogPart===c?' on':'')+'" data-catalog-part="'+c+'">'+c+'</button>';}).join("");
     var list=CATALOG.filter(function(a){
       var partOk=catalogPart==="全部"||a.part===catalogPart;
+      var equipment=document.getElementById("catalogEquipment").value,type=document.getElementById("catalogType").value;
+      var equipmentOk=equipment==="全部"||a.equipment===equipment,typeOk=type==="全部"||a.type===type;
       var key=catalogKeyword.toLowerCase().trim();
-      var keyOk=!key||(a.title+" "+a.part+" "+a.equipment+" "+a.guide).toLowerCase().indexOf(key)>=0;
-      return partOk&&keyOk;
+      var keyOk=!key||(a.title+" "+(a.en||"")+" "+a.part+" "+a.equipment+" "+a.guide).toLowerCase().indexOf(key)>=0;
+      return partOk&&equipmentOk&&typeOk&&keyOk;
     });
     var added={};db.tutorials.forEach(function(t){if(t.catalogId)added[t.catalogId]=1;});
-    document.getElementById("catalogList").innerHTML=list.length?list.map(function(a){
+    document.getElementById("catalogList").innerHTML='<div class="catalog-count">共 '+list.length+' 个匹配动作 · 动作库共 '+CATALOG.length+' 个内置动作</div>'+(list.length?list.map(function(a){
       var exists=!!added[a.id]||db.tutorials.some(function(t){return !t.catalogId&&t.title===a.title&&t.part===a.part;});
-      return '<div class="catalog-card"><div class="catalog-card-top"><div class="catalog-card-main"><div class="catalog-card-title">'+esc(a.title)+'</div><div class="catalog-card-desc">'+esc(a.guide)+'</div><div class="catalog-card-meta"><span class="tag" style="--h:'+(HUE[a.part]||90)+'">'+esc(a.part)+'</span><span class="tag plain">'+esc(a.equipment)+'</span><span class="tag plain">'+esc(a.type)+'</span></div><div class="catalog-card-desc">'+esc(a.note)+'</div></div><button class="act '+(exists?'':'primary')+'" data-catalog-add="'+a.id+'" '+(exists?'disabled':'')+'>'+(exists?'已添加':'加入')+'</button></div></div>';
-    }).join(""):'<div class="empty"><strong>没有找到匹配动作</strong>试试其他关键词或分类</div>';
+      return '<div class="catalog-card"><div class="catalog-card-top"><img class="action-cover" src="'+coverFor(a)+'" alt="'+esc(a.title)+'动作示意" loading="lazy"><div class="catalog-card-main"><div class="catalog-card-title">'+esc(a.title)+'</div><div class="catalog-card-desc">'+esc(a.guide)+'</div><div class="catalog-card-meta"><span class="tag" style="--h:'+(HUE[a.part]||90)+'">'+esc(a.part)+'</span><span class="tag plain">'+esc(a.equipment)+'</span><span class="tag plain">'+esc(a.type)+'</span></div><div class="catalog-card-desc">'+esc(a.note)+'</div></div><div class="catalog-card-actions"><button class="act '+(exists?'':'primary')+'" data-catalog-add="'+a.id+'" '+(exists?'disabled':'')+'>'+(exists?'已在动作库':'加入动作库')+'</button><button class="act" data-catalog-week="'+a.id+'">加入'+weekDayNames[selectedWeekDay]+'</button></div></div></div>';
+    }).join(""):'<div class="empty"><strong>没有找到匹配动作</strong>试试其他关键词或分类</div>');
   }
   function addCatalogAction(id){
     var a=CATALOG.filter(function(x){return x.id===id;})[0];if(!a)return;
     if(db.tutorials.some(function(t){return t.catalogId===id||(t.title===a.title&&t.part===a.part);})){toast("这个动作已经在动作库里了");renderCatalog();return;}
-    db.tutorials.push({id:uid(),catalogId:a.id,title:a.title,part:a.part,platform:"内置动作",equipment:a.equipment,type:a.type,guide:a.guide,frames:[],url:"",note:a.note,createdAt:Date.now()});
+    db.tutorials.push({id:uid(),catalogId:a.id,title:a.title,part:a.part,platform:"内置动作",equipment:a.equipment,type:a.type,guide:a.guide,frames:[],url:"",note:a.note,cover:"",createdAt:Date.now()});
     filterPart=a.part;keyword="";document.getElementById("searchInput").value="";
     save();renderCatalog();renderLibrary();renderToday();renderMe();toast("已加入动作库："+a.title);
   }
-  document.getElementById("btnOpenCatalog").addEventListener("click",function(){catalogKeyword="";document.getElementById("catalogSearch").value="";catalogPart="全部";renderCatalog();show("catalog");});
+  document.getElementById("btnOpenCatalog").addEventListener("click",function(){catalogKeyword="";document.getElementById("catalogSearch").value="";catalogPart="全部";document.getElementById("catalogEquipment").value="全部";document.getElementById("catalogType").value="全部";renderCatalog();show("catalog");});
   document.getElementById("catalogSearch").addEventListener("input",function(e){catalogKeyword=e.target.value;renderCatalog();});
+  document.getElementById("catalogEquipment").addEventListener("change",renderCatalog);
+  document.getElementById("catalogType").addEventListener("change",renderCatalog);
 
   /* ---------- 添加自定义动作 ---------- */
   var inTitle=document.getElementById("inTitle"),inNote=document.getElementById("inNote"),
       inPart=document.getElementById("inPart"),inEquipment=document.getElementById("inEquipment"),
       inType=document.getElementById("inType"),inGuide=document.getElementById("inGuide");
+  var pendingActionCover="";
+  var coverFile=document.getElementById("inCoverFile"),coverPreview=document.getElementById("customCoverPreview");
+  coverPreview.src=coverSvg({part:"胸",equipment:"自重"});
+  document.getElementById("btnChooseCover").addEventListener("click",function(){coverFile.click();});
+  coverFile.addEventListener("change",function(){
+    var file=coverFile.files&&coverFile.files[0];if(!file)return;
+    if(!file.type||file.type.indexOf("image/")!==0){toast("请选择图片文件");return;}
+    var reader=new FileReader();reader.onload=function(){
+      var img=new Image();img.onload=function(){
+        var maxW=520,maxH=360,scale=Math.min(1,maxW/img.width,maxH/img.height),canvas=document.createElement("canvas");
+        canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));
+        var ctx=canvas.getContext("2d");ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        pendingActionCover=canvas.toDataURL("image/jpeg",.78);coverPreview.src=pendingActionCover;
+      };img.onerror=function(){toast("图片读取失败，请换一张图片");};img.src=reader.result;
+    };reader.readAsDataURL(file);
+  });
   document.getElementById("btnSaveTut").addEventListener("click",function(){
     var title=inTitle.value.trim();if(!title){toast("请填写动作名称");return;}
-    db.tutorials.push({id:uid(),title:title,part:inPart.value,platform:"自定义",equipment:inEquipment.value,type:inType.value,guide:inGuide.value.trim(),frames:[],url:"",note:inNote.value.trim(),createdAt:Date.now()});
+    db.tutorials.push({id:uid(),title:title,part:inPart.value,platform:"自定义",equipment:inEquipment.value,type:inType.value,guide:inGuide.value.trim(),frames:[],url:"",note:inNote.value.trim(),cover:pendingActionCover,createdAt:Date.now()});
     filterPart=inPart.value;keyword="";document.getElementById("searchInput").value="";
-    save();inTitle.value=inGuide.value=inNote.value="";inPart.value="胸";inEquipment.value="自重";inType.value="复合动作";
+    save();inTitle.value=inGuide.value=inNote.value="";inPart.value="胸";inEquipment.value="自重";inType.value="复合动作";pendingActionCover="";coverFile.value="";coverPreview.src=coverSvg({part:"胸",equipment:"自重"});
     hide();toast("已保存到动作库");renderLibrary();renderToday();renderMe();if(current!=="library")setView("library");
   });
 
@@ -1082,9 +1448,90 @@ details.help[open] summary{color:var(--accent)}
     renderToday(); renderTimerLogs(); renderMe();
   });
 
+
+  /* ---------- 饮食计划 ---------- */
+  var DIET_DAYS=["周一","周二","周三","周四","周五","周六","周日"];
+  var MEALS=[{id:"breakfast",name:"早餐"},{id:"lunch",name:"午餐"},{id:"dinner",name:"晚餐"},{id:"snack",name:"加餐"}];
+  var FOOD_BASE=[
+    ["rice","米饭（熟）",116,2.6,25.9,.3],["chicken","鸡胸肉（熟）",165,31,0,3.6],["egg","鸡蛋",144,13.3,.7,9.5],
+    ["oats","燕麦片（干）",389,16.9,66.3,6.9],["milk","纯牛奶",54,3,3.4,3.2],["banana","香蕉",89,1.1,22.8,.3],
+    ["yogurt","无糖希腊酸奶",73,10,3.9,2],["potato","土豆（熟）",87,1.9,20.1,.1],["salmon","三文鱼",208,20.4,0,13.4],
+    ["beef","瘦牛肉（熟）",170,26,0,7],["tofu","北豆腐",90,9.2,2,5.3],["broccoli","西兰花（熟）",35,2.4,7.2,.4],
+    ["sweetpotato","红薯（熟）",86,1.6,20.1,.1],["bread","全麦面包",247,13,41,4.2],["peanut","花生酱",588,25,20,50],
+    ["whey","乳清蛋白粉",400,80,8,6],["apple","苹果",52,.3,13.8,.2],["avocado","牛油果",160,2,8.5,14.7],
+    ["shrimp","虾仁（熟）",99,24,0,.3],["pork","猪里脊（熟）",143,26,0,3.5],["corn","玉米",96,3.4,21,.8],
+    ["cucumber","黄瓜",15,.7,3.6,.1],["tomato","番茄",18,.9,3.9,.2],["almond","杏仁",579,21.2,21.6,49.9]
+  ];
+  var selectedDietDay=(new Date().getDay()+6)%7;
+  function ensureDiet(){
+    if(!db.diet)db.diet={profile:{},targets:{},week:{}};
+    db.diet.profile=db.diet.profile||{};db.diet.targets=db.diet.targets||{};db.diet.week=db.diet.week||{};
+    for(var d=0;d<7;d++){db.diet.week[d]=db.diet.week[d]||{};MEALS.forEach(function(m){db.diet.week[d][m.id]=db.diet.week[d][m.id]||[];});}
+  }
+  function allFoods(){return FOOD_BASE.map(function(f){return {id:f[0],name:f[1],kcal:f[2],p:f[3],c:f[4],fat:f[5]};}).concat(db.diet.customFoods||[]);}
+  function getDietTotals(day){
+    ensureDiet();var total={kcal:0,p:0,c:0,fat:0};
+    MEALS.forEach(function(m){(db.diet.week[day][m.id]||[]).forEach(function(item){var food=allFoods().filter(function(f){return f.id===item.foodId;})[0];if(!food)return;var factor=(Number(item.grams)||0)/100;total.kcal+=food.kcal*factor;total.p+=food.p*factor;total.c+=food.c*factor;total.fat+=food.fat*factor;});});
+    return total;
+  }
+  function renderDiet(){
+    ensureDiet();
+    document.getElementById("dietDays").innerHTML=DIET_DAYS.map(function(d,i){return '<button class="day-btn '+(selectedDietDay===i?'on':'')+'" data-diet-day="'+i+'">'+d+'<b>'+(i+1)+'</b></button>';}).join("");
+    var totals=getDietTotals(selectedDietDay),t=db.diet.targets||{};
+    function val(x){return Math.round(x*10)/10;}
+    document.getElementById("dietKcal").textContent=Math.round(totals.kcal)+" / "+(t.kcal||"—");
+    document.getElementById("dietProtein").textContent=val(totals.p)+" / "+(t.protein||"—");
+    document.getElementById("dietCarbs").textContent=val(totals.c)+" / "+(t.carbs||"—");
+    document.getElementById("dietFat").textContent="脂肪 "+val(totals.fat)+" / "+(t.fat||"—")+" g";
+    document.getElementById("dietRemaining").textContent=t.kcal?"剩余热量 "+Math.round(t.kcal-totals.kcal)+" kcal":"尚未设置热量目标";
+    [["dietKcalBar",totals.kcal,t.kcal],["dietProteinBar",totals.p,t.protein],["dietCarbsBar",totals.c,t.carbs]].forEach(function(x){document.getElementById(x[0]).style.width=(x[2]?Math.min(100,x[1]/x[2]*100):0)+"%";});
+    document.getElementById("dietGoalLabel").textContent=t.mode==="manual"?"手动营养目标":({cut:"减脂目标",bulk:"增肌目标",maintain:"维持体重目标"}[t.mode]||"先设置你的营养目标");
+    document.getElementById("dietMeals").innerHTML=MEALS.map(function(m){
+      var items=db.diet.week[selectedDietDay][m.id]||[];
+      var rows=items.map(function(item){var f=allFoods().filter(function(x){return x.id===item.foodId;})[0];if(!f)return "";var g=Number(item.grams)||0;return '<div class="food-row"><div><b>'+esc(f.name)+'</b><small>'+Math.round(f.kcal*g/100)+' kcal · 蛋白 '+(f.p*g/100).toFixed(1)+'g · 碳水 '+(f.c*g/100).toFixed(1)+'g</small></div><input class="food-qty" type="number" min="0" max="5000" step="5" value="'+g+'" data-food-qty="'+item.id+'" aria-label="食物克数"><button class="food-del" data-food-del="'+item.id+'">×</button></div>';}).join("");
+      var opts=allFoods().map(function(f){return '<option value="'+esc(f.id)+'">'+esc(f.name)+'</option>';}).join("");
+      return '<div class="meal-card"><div class="meal-head"><strong>'+m.name+'</strong><small>'+items.length+' 项食物</small></div>'+(rows||'<div class="diet-note">还没有添加食物</div>')+'<div class="food-add"><select class="select" id="foodSelect_'+m.id+'">'+opts+'</select><button data-food-add="'+m.id+'">添加</button></div></div>';
+    }).join("");
+    renderFoodCatalog();
+    var pr=db.diet.profile||{};
+    ["Weight","Height","Age","Sex","Activity"].forEach(function(k){var el=document.getElementById("diet"+k);if(el&&pr[k.toLowerCase()]!=null)el.value=pr[k.toLowerCase()];});
+    var goal=document.getElementById("dietGoal");if(goal)goal.value=t.mode||"cut";
+    ["Kcal","Protein","Carbs","Fat"].forEach(function(k){var el=document.getElementById("target"+k);if(el)el.value=t[k.toLowerCase()]||"";});
+  }
+  function renderFoodCatalog(){
+    var q=(document.getElementById("foodSearch").value||"").trim().toLowerCase();
+    var foods=allFoods().filter(function(f){return !q||f.name.toLowerCase().indexOf(q)>=0;});
+    document.getElementById("foodCatalog").innerHTML=foods.map(function(f){return '<button class="food-pick" data-food-quick="'+esc(f.id)+'"><b>'+esc(f.name)+'</b><small>'+f.kcal+' kcal · P '+f.p+' · C '+f.c+' · F '+f.fat+'</small></button>';}).join("")||'<div class="empty" style="grid-column:1/-1">没有找到食物</div>';
+  }
+  function addDietFood(meal,foodId){
+    ensureDiet();var f=allFoods().filter(function(x){return x.id===foodId;})[0];if(!f)return;
+    db.diet.week[selectedDietDay][meal].push({id:uid(),foodId:foodId,grams:100});save();renderDiet();toast("已加入"+f.name+"，可修改克数");
+  }
+  function autoDietTargets(){
+    var weight=Number(document.getElementById("dietWeight").value),height=Number(document.getElementById("dietHeight").value),age=Number(document.getElementById("dietAge").value),sex=document.getElementById("dietSex").value,activity=Number(document.getElementById("dietActivity").value),goal=document.getElementById("dietGoal").value;
+    if(!(weight>0&&height>0&&age>0)){toast("请先填写体重、身高和年龄");return;}
+    db.diet.profile={weight:weight,height:height,age:age,sex:sex,activity:activity};
+    var bmr=10*weight+6.25*height-5*age+(sex==="male"?5:-161),maint=bmr*activity;
+    var kcal=goal==="cut"?maint-350:goal==="bulk"?maint+200:maint;
+    var protein=weight*(goal==="cut"?2:goal==="bulk"?1.8:1.6),fat=weight*.8,carbs=Math.max(0,(kcal-protein*4-fat*9)/4);
+    db.diet.targets={mode:goal,kcal:Math.round(kcal),protein:Math.round(protein),carbs:Math.round(carbs),fat:Math.round(fat)};save();renderDiet();toast("已生成营养目标，可继续手动调整");
+  }
+  document.getElementById("dietDays").addEventListener("click",function(e){var b=e.target.closest("[data-diet-day]");if(!b)return;selectedDietDay=Number(b.getAttribute("data-diet-day"));renderDiet();});
+  document.getElementById("foodSearch").addEventListener("input",renderFoodCatalog);
+  document.getElementById("btnDietSettings").addEventListener("click",function(){var d=document.getElementById("dietSettingsPanel");d.open=!d.open;d.scrollIntoView({behavior:"smooth",block:"start"});});
+  document.getElementById("btnAutoTargets").addEventListener("click",autoDietTargets);
+  document.getElementById("btnSaveTargets").addEventListener("click",function(){var mode=document.getElementById("dietGoal").value;db.diet.targets={mode:mode,kcal:Number(document.getElementById("targetKcal").value)||0,protein:Number(document.getElementById("targetProtein").value)||0,carbs:Number(document.getElementById("targetCarbs").value)||0,fat:Number(document.getElementById("targetFat").value)||0};save();renderDiet();toast("营养目标已保存");});
+  document.getElementById("dietGoal").addEventListener("change",function(){if(db.diet.targets)db.diet.targets.mode=this.value;save();renderDiet();});
+  document.getElementById("btnClearDiet").addEventListener("click",function(){if(!confirm("清空这一天的全部餐食？"))return;MEALS.forEach(function(m){db.diet.week[selectedDietDay][m.id]=[];});save();renderDiet();});
+  document.getElementById("btnCopyDiet").addEventListener("click",function(){var raw=prompt("复制到星期几？输入 1–7（周一到周日）");var n=Number(raw);if(n<1||n>7||!Number.isInteger(n)){if(raw!==null)toast("请输入 1 到 7");return;}if(n-1===selectedDietDay){toast("目标日期与当前日期相同");return;}db.diet.week[n-1]=JSON.parse(JSON.stringify(db.diet.week[selectedDietDay]));save();toast("已复制到"+DIET_DAYS[n-1]);});
+  document.getElementById("btnAddFoodCustom").addEventListener("click",function(){var name=prompt("食物名称");if(!name||!name.trim())return;var kcal=Number(prompt("每 100g 热量 kcal", "100"));if(!Number.isFinite(kcal)||kcal<0)return;var p=Number(prompt("每 100g 蛋白质 g", "0"));var c=Number(prompt("每 100g 碳水 g", "0"));var fat=Number(prompt("每 100g 脂肪 g", "0"));if([p,c,fat].some(function(x){return !Number.isFinite(x)||x<0;})){toast("营养数值不正确");return;}db.diet.customFoods=db.diet.customFoods||[];var id="custom_"+uid();db.diet.customFoods.push({id:id,name:name.trim(),kcal:kcal,p:p,c:c,fat:fat});save();renderDiet();toast("自定义食物已保存");});
+  document.getElementById("dietMeals").addEventListener("click",function(e){var add=e.target.closest("[data-food-add]"),del=e.target.closest("[data-food-del]");if(add){var meal=add.getAttribute("data-food-add"),sel=document.getElementById("foodSelect_"+meal);addDietFood(meal,sel.value);return;}if(del){var id=del.getAttribute("data-food-del");MEALS.forEach(function(m){db.diet.week[selectedDietDay][m.id]=db.diet.week[selectedDietDay][m.id].filter(function(x){return x.id!==id;});});save();renderDiet();}});
+  document.getElementById("dietMeals").addEventListener("change",function(e){var inp=e.target.closest("[data-food-qty]");if(!inp)return;var id=inp.getAttribute("data-food-qty"),grams=Math.max(0,Math.min(5000,Number(inp.value)||0));MEALS.forEach(function(m){db.diet.week[selectedDietDay][m.id].forEach(function(x){if(x.id===id)x.grams=grams;});});save();renderDiet();});
+  document.getElementById("foodCatalog").addEventListener("click",function(e){var b=e.target.closest("[data-food-quick]");if(!b)return;var id=b.getAttribute("data-food-quick");addDietFood(document.getElementById("foodQuickMeal").value,id);});
+
   /* ---------- 事件委托 ---------- */
   document.addEventListener("click", function(e){
-    var el = e.target.closest("[data-check],[data-unplan],[data-addplan],[data-deltut],[data-dellog],[data-part],[data-catalog-add],[data-catalog-part]");
+    var el = e.target.closest("[data-check],[data-unplan],[data-addplan],[data-deltut],[data-dellog],[data-part],[data-catalog-add],[data-catalog-part],[data-catalog-week],[data-add-week-custom]");
     if(!el) return;
 
     if(el.hasAttribute("data-check")){
@@ -1115,9 +1562,9 @@ details.help[open] summary{color:var(--accent)}
       var did = el.getAttribute("data-deltut");
       if(!confirm("删除这个动作？")) return;
       db.tutorials = db.tutorials.filter(function(t){ return t.id!==did; });
-      Object.keys(db.plan).forEach(function(k){
-        db.plan[k] = (db.plan[k]||[]).filter(function(x){ return x!==did; });
-      });
+      Object.keys(db.plan).forEach(function(k){db.plan[k]=(db.plan[k]||[]).filter(function(x){return x!==did;});});
+      Object.keys(db.weekPlan||{}).forEach(function(k){db.weekPlan[k]=(db.weekPlan[k]||[]).filter(function(x){return x!==did;});});
+      Object.keys(db.weekPlanSettings||{}).forEach(function(k){if(k.slice(k.indexOf(":")+1)===did)delete db.weekPlanSettings[k];});
       save(); renderLibrary(); renderToday(); toast("已删除"); return;
     }
     if(el.hasAttribute("data-dellog")){
@@ -1135,6 +1582,8 @@ details.help[open] summary{color:var(--accent)}
     if(el.hasAttribute("data-catalog-add")){
       addCatalogAction(el.getAttribute("data-catalog-add"));return;
     }
+    if(el.hasAttribute("data-catalog-week")){addCatalogToWeek(el.getAttribute("data-catalog-week"));return;}
+    if(el.hasAttribute("data-add-week-custom")){var wid=el.getAttribute("data-add-week-custom"),wk=String(selectedWeekDay);db.weekPlan[wk]=db.weekPlan[wk]||[];if(db.weekPlan[wk].indexOf(wid)<0){db.weekPlan[wk].push(wid);weekSettings(selectedWeekDay,wid);save();renderWeekPlan();toast("已加入"+weekDayNames[selectedWeekDay]);}else toast("该动作已在本日计划中");return;}
   });
 
   document.getElementById("searchInput").addEventListener("input", function(e){
@@ -1170,9 +1619,9 @@ details.help[open] summary{color:var(--accent)}
         var d = JSON.parse(r.result);
         if(!d.tutorials || !d.logs) throw new Error("格式不对");
         db.tutorials = d.tutorials; db.logs = d.logs;
-        db.plan = d.plan || {}; db.done = d.done || {};
+        db.plan = d.plan || {}; db.weekPlan=d.weekPlan||{}; db.weekPlanSettings=d.weekPlanSettings||{}; db.weekRest=d.weekRest||{}; db.done = d.done || {}; db.diet = d.diet || {profile:{},targets:{},week:{}};
         save(); toast("导入成功，共 "+db.logs.length+" 条记录");
-        renderToday(); renderLibrary(); renderMe(); renderTimerLogs(); setView("today");
+        renderToday(); renderLibrary(); renderMe(); renderTimerLogs(); renderDiet(); setView("today");
       }catch(err){ toast("文件格式不正确"); }
     };
     r.readAsText(f);
@@ -1181,7 +1630,7 @@ details.help[open] summary{color:var(--accent)}
   document.getElementById("btnWipe").addEventListener("click", function(){
     if(!confirm("确定清空所有动作和训练记录？此操作不可恢复。")) return;
     db = blank(); save();
-    renderToday(); renderLibrary(); renderMe(); renderTimerLogs();
+    renderToday(); renderLibrary(); renderMe(); renderTimerLogs(); renderDiet();
     toast("已清空");
   });
 
@@ -1189,7 +1638,7 @@ details.help[open] summary{color:var(--accent)}
   // 首次使用时保持动作库为空；用户可从内置常用动作库自行挑选。旧版本已保存的数据会原样保留。
 
   paintPresets(); paintTimer();
-  renderToday(); renderChips(); renderLibrary(); renderTimerLogs(); renderMe();
+  renderToday(); renderChips(); renderLibrary(); renderTimerLogs(); renderMe(); renderDiet();
   fab.style.display = "grid";
 
   if("serviceWorker" in navigator && location.protocol.indexOf("http")===0){
