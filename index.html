@@ -1038,10 +1038,34 @@ details.help[open] summary{color:var(--accent)}
       if(active("glute"))highlights+='<path d="M-11 84 Q-6 78 0 86 Q6 78 11 84 L9 96 L-9 96Z"/>';
       if(active("calf"))highlights+='<path d="M-16 119 L-13 119 L-11 136 L-17 136Z M16 119 L13 119 L11 136 L17 136Z"/>';
       var equipment="";
-      var eq=(a.equipment||"").toLowerCase();
-      if(/哑铃|dumbbell/.test(eq))equipment='<g fill="#747D82" stroke="#B7BEC1" stroke-width="2"><circle cx="-42" cy="81" r="7"/><circle cx="42" cy="81" r="7"/><path d="M-38 81H-30 M30 81H38" stroke-width="4"/></g>';
-      else if(/杠铃|barbell/.test(eq))equipment='<path d="M-48 73H48 M-43 66V80 M-37 64V82 M37 64V82 M43 66V80" stroke="#AEB6B9" stroke-width="3" stroke-linecap="round"/>';
-      else if(/壶铃|kettlebell/.test(eq))equipment='<g fill="#778186" stroke="#C1C7C9" stroke-width="2"><path d="M27 83 Q25 69 38 69 Q51 69 49 83Z"/><path d="M31 70Q38 59 45 70" fill="none"/></g>';
+      var eq=(a.equipment||"").toLowerCase(), titleText=String(a.title||"");
+      var metal='stroke="#9DA8AD" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"';
+      if(/哑铃|dumbbell/.test(eq)){
+        equipment='<g fill="#687278" stroke="#D0D6D8" stroke-width="1.8"><rect x="-48" y="75" width="10" height="13" rx="2"/><rect x="-36" y="78" width="8" height="7" rx="2"/><path d="M-38 81H-28" stroke="#D0D6D8" stroke-width="3"/><rect x="28" y="78" width="8" height="7" rx="2"/><rect x="38" y="75" width="10" height="13" rx="2"/><path d="M28 81H38" stroke="#D0D6D8" stroke-width="3"/></g>';
+        if(/卧推|飞鸟|上斜|平板/.test(titleText)) equipment+='<g '+metal+'><path d="M-29 112L26 112L31 118H-34Z" fill="#303A40"/><path d="M-20 117L-25 139M20 117L25 139"/></g>';
+      }else if(/杠铃|barbell/.test(eq)){
+        equipment='<g '+metal+'><path d="M-52 67H52" stroke-width="4"/><path d="M-48 59V75M-42 56V78M42 56V78M48 59V75" stroke-width="4"/>';
+        if(/深蹲|卧推|架/.test(titleText))equipment+='<path d="M-57 20V143M57 20V143M-57 34H-42M42 34H57M-57 70H-42M42 70H57" stroke-width="4"/>';
+        equipment+='</g>';
+      }else if(/壶铃|kettlebell/.test(eq)){
+        equipment='<g fill="#778186" stroke="#C1C7C9" stroke-width="2"><path d="M27 83Q25 69 38 69Q51 69 49 83Z"/><path d="M31 70Q38 59 45 70" fill="none"/></g>';
+      }else if(/固定器械/.test(eq)){
+        if(/推胸|胸推/.test(titleText)){
+          equipment='<g '+metal+'><path d="M-55 18V143M55 18V143M-55 22H-35M35 22H55M-48 34V93M48 34V93" stroke-width="4"/><path d="M-47 88L-24 88M47 88L24 88" stroke-width="5"/><path d="M-18 107H18V119H-18Z" fill="#303A40"/><path d="M-14 119V139M14 119V139"/></g>';
+        }else if(/腿举/.test(titleText)){
+          equipment='<g '+metal+'><path d="M-54 22V139M-54 22L-15 22M-50 35L40 100" stroke-width="5"/><path d="M-4 84L48 84L48 104L-4 104Z" fill="#39444A"/><path d="M-42 139H49"/></g>';
+        }else if(/腿屈伸|腿弯举/.test(titleText)){
+          equipment='<g '+metal+'><path d="M-35 73H35V88H-35Z" fill="#303A40"/><path d="M-28 88V134M28 88V134M-28 112H28" stroke-width="5"/><circle cx="0" cy="72" r="7" fill="#657078"/></g>';
+        }else{
+          equipment='<g '+metal+'><path d="M-53 18V143M53 18V143M-53 22H53M-42 22V48M42 22V48M-53 137H53" stroke-width="4"/><path d="M-36 47H36" stroke-width="4"/><circle cx="-36" cy="47" r="4" fill="#AAB4B8"/><circle cx="36" cy="47" r="4" fill="#AAB4B8"/></g>';
+        }
+      }else if(/龙门架|绳索|cable/.test(eq)){
+        equipment='<g '+metal+'><path d="M-56 15V144M56 15V144M-56 20H56M-56 140H56" stroke-width="4"/><circle cx="0" cy="24" r="5" fill="#AAB4B8"/><path d="M0 29L0 49L-22 70" stroke-width="2"/><path d="M-29 68L-15 72" stroke-width="3"/></g>';
+      }else if(/弹力带/.test(eq)){
+        equipment='<path d="M-31 68Q0 112 31 68" fill="none" stroke="#C4F542" stroke-width="4" stroke-dasharray="4 3"/>';
+      }else if(/自重|徒手/.test(eq)){
+        equipment="";
+      }
       return '<g transform="translate('+x+' 8) scale(1.05)"><ellipse cx="0" cy="145" rx="34" ry="4" fill="#22292D"/><circle cx="0" cy="29" r="10" fill="url(#skin)" stroke="#D0D5D7" stroke-width=".8"/><path d="'+torso+'" fill="url(#body)" stroke="#D0D5D7" stroke-width="1"/><path d="'+arms+'" fill="none" stroke="url(#limb)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="'+legs+'" fill="none" stroke="url(#limb)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><g fill="'+red+'" opacity=".96" stroke="#FF9AA1" stroke-width=".7">'+highlights+'</g><path d="M-5 45Q0 48 5 45 M-7 69H7 M-5 76H5" fill="none" stroke="#697378" stroke-width=".8" opacity=".8"/>'+equipment+'</g>';
     }
     var svg='<svg xmlns="http://www.w3.org/2000/svg" width="360" height="210" viewBox="0 0 360 210"><defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#080A0C"/><stop offset="1" stop-color="#111619"/></linearGradient><radialGradient id="skin" cx="35%" cy="25%"><stop stop-color="#E1E5E6"/><stop offset=".55" stop-color="#AAB2B6"/><stop offset="1" stop-color="#596267"/></radialGradient><linearGradient id="body" x1="0" x2="1"><stop stop-color="#596267"/><stop offset=".45" stop-color="#D0D5D7"/><stop offset="1" stop-color="#60696E"/></linearGradient><linearGradient id="limb" x1="0" x2="1"><stop stop-color="#596267"/><stop offset=".5" stop-color="#C9CFD1"/><stop offset="1" stop-color="#596267"/></linearGradient></defs><rect width="360" height="210" rx="14" fill="url(#bg)"/><path d="M180 18V188" stroke="#293236" stroke-dasharray="3 5"/><text x="90" y="18" text-anchor="middle" fill="#8E999D" font-size="9" letter-spacing="1.5">START</text><text x="270" y="18" text-anchor="middle" fill="#8E999D" font-size="9" letter-spacing="1.5">MOVEMENT</text>'+figure(90,"high",false)+figure(270,kind==="legs"||kind==="core"?"low":"high",false)+'<text x="180" y="199" text-anchor="middle" fill="#D9E0E2" font-size="10">'+title+'</text><circle cx="14" cy="14" r="2" fill="#F04452"/></svg>';
