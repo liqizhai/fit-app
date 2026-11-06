@@ -983,7 +983,7 @@ details.help[open] summary{color:var(--accent)}
       + '</div>';
   }
 
-  /* ---------- 动作封面：本地 SVG 示意图，离线可用 ---------- */
+  /* ---------- 动作封面：双姿态肌群示意，纯本地 SVG / 离线可用 ---------- */
   function coverKind(a){
     var n=((a.title||"")+" "+(a.en||"")+" "+(a.guide||"")).toLowerCase();
     if(/热身|拉伸|活动度|旋转|开合|动态|伸展|mobility|stretch|warm/.test(n))return "stretch";
@@ -995,26 +995,59 @@ details.help[open] summary{color:var(--accent)}
     if(/弯举|下压|臂屈|curl|triceps|biceps/.test(n))return "arms";
     return a.part==="热身"?"stretch":a.part==="腿"||a.part==="臀"?"legs":a.part==="背"?"pull":a.part==="胸"||a.part==="肩"?"push":a.part==="核心"?"core":a.part==="有氧"?"cardio":"general";
   }
+  function coverMuscles(a,kind){
+    var n=((a.title||"")+" "+(a.en||"")+" "+(a.guide||"")).toLowerCase(), p=a.part||"";
+    if(/臀桥|臀推|髋推|蚌式|kick.?back|glute/.test(n))return ["glute"];
+    if(/腿弯举|腘绳|腿后|hamstring/.test(n))return ["ham"];
+    if(/腿屈伸|股四|leg extension/.test(n))return ["quad"];
+    if(/提踵|小腿|calf/.test(n))return ["calf"];
+    if(/硬拉|罗马尼亚|早安式|good morning/.test(n))return ["ham","glute","back"];
+    if(/深蹲|弓步|腿举|蹬腿|squat|lunge|leg press/.test(n))return ["quad","glute"];
+    if(/卷腹|仰卧起坐|平板|举腿|死虫|俄罗斯转体|腹/.test(n))return ["core"];
+    if(/划船|下拉|引体|面拉|反向飞鸟|row|pulldown|pull.?up/.test(n))return ["back","biceps"];
+    if(/弯举|二头|biceps|curl/.test(n))return ["biceps"];
+    if(/下压|臂屈伸|三头|triceps/.test(n))return ["triceps"];
+    if(/侧平举|推举|肩推|肩部|deltoid|lateral raise|overhead press/.test(n)||p==="肩")return ["shoulder"];
+    if(/卧推|俯卧撑|飞鸟|推胸|夹胸|胸/.test(n)||p==="胸")return ["chest","triceps"];
+    if(p==="背")return ["back","biceps"];
+    if(p==="腿")return ["quad","ham"];
+    if(p==="臀")return ["glute"];
+    if(p==="核心")return ["core"];
+    if(p==="手臂")return ["biceps","triceps"];
+    if(p==="热身"||p==="有氧"||p==="全身")return ["shoulder","chest","quad","core"];
+    return kind==="legs"?["quad","glute"]:kind==="pull"?["back","biceps"]:kind==="push"?["chest","triceps"]:kind==="core"?["core"]:["shoulder"];
+  }
   function coverSvg(a){
-    var kind=coverKind(a),eq=(a.equipment||"").toLowerCase();
-    var gear="";
-    if(/杠铃|barbell/.test(eq))gear='<path d="M48 35H172M58 25V45M68 22V48M152 22V48M162 25V45" stroke="#D7E2D4" stroke-width="5" stroke-linecap="round"/><path d="M48 35H172" stroke="#C4F542" stroke-width="3"/>';
-    else if(/哑铃|dumbbell/.test(eq))gear='<path d="M70 30V48M80 26V52M140 26V52M150 30V48M80 39H140" stroke="#D7E2D4" stroke-width="6" stroke-linecap="round"/>';
-    else if(/壶铃|kettlebell/.test(eq))gear='<path d="M132 47c-2-16 28-16 26 0" fill="none" stroke="#D7E2D4" stroke-width="5"/><path d="M126 49q18-13 36 0l-3 20q-15 12-30 0z" fill="#C4F542"/>';
-    else if(/绳索|龙门|固定器械|器械|machine|cable/.test(eq))gear='<path d="M174 18V104M165 18H183M174 43L150 60" stroke="#D7E2D4" stroke-width="4" stroke-linecap="round"/><circle cx="150" cy="60" r="5" fill="#C4F542"/>';
-    else if(/弹力带|band/.test(eq))gear='<path d="M68 38Q112 4 156 38" fill="none" stroke="#C4F542" stroke-width="5" stroke-linecap="round"/>';
-    var person="";
-    if(kind==="push") person='<path d="M93 57Q108 49 123 57L132 82 119 91 97 86 84 72Z" fill="#C4F542"/><circle cx="108" cy="43" r="10" fill="#E6ECE4"/><path d="M91 61L75 39 64 30M124 61L141 39 153 30M100 86L91 111 80 119M119 87L128 110 139 118" fill="none" stroke="#E6ECE4" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>';
-    else if(kind==="pull") person='<path d="M98 54Q111 46 124 54L130 83 111 93 91 82Z" fill="#C4F542"/><circle cx="111" cy="40" r="10" fill="#E6ECE4"/><path d="M99 56L84 34 80 18M123 56L138 34 142 18M100 87L94 111 85 119M120 87L127 111 137 119" fill="none" stroke="#E6ECE4" stroke-width="8" stroke-linecap="round"/>';
-    else if(kind==="legs") person='<path d="M96 51Q112 44 128 54L126 76 95 76Z" fill="#C4F542"/><circle cx="111" cy="37" r="10" fill="#E6ECE4"/><path d="M99 57L82 73 88 94 74 111M124 57L140 72 132 91 148 109M99 58L85 44 73 49M124 58L139 43 150 48" fill="none" stroke="#E6ECE4" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>';
-    else if(kind==="core") person='<path d="M65 80Q90 59 121 67L148 76 143 89 111 85 81 96Z" fill="#C4F542"/><circle cx="151" cy="72" r="9" fill="#E6ECE4"/><path d="M80 91L65 111M105 85L98 108M119 83L136 104" fill="none" stroke="#E6ECE4" stroke-width="8" stroke-linecap="round"/>';
-    else if(kind==="cardio") person='<path d="M96 55Q111 47 124 57L119 82 96 84Z" fill="#C4F542"/><circle cx="111" cy="40" r="10" fill="#E6ECE4"/><path d="M98 59L82 76 67 72M123 59L140 70 153 61M101 82L87 101 72 112M117 82L132 94 145 112" fill="none" stroke="#E6ECE4" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>';
-    else if(kind==="stretch") person='<path d="M99 57Q113 48 126 58L124 84 98 84Z" fill="#C4F542"/><circle cx="112" cy="41" r="10" fill="#E6ECE4"/><path d="M100 60L80 46 61 46M124 60L143 38 157 24M102 83L91 111 78 117M120 83L135 108 151 114" fill="none" stroke="#E6ECE4" stroke-width="8" stroke-linecap="round"/>';
-    else person='<path d="M99 56Q112 48 125 57L126 84 97 84Z" fill="#C4F542"/><circle cx="112" cy="40" r="10" fill="#E6ECE4"/><path d="M100 60L83 78 70 68M124 60L141 76 155 69M103 84L93 111 82 118M120 84L132 110 145 117" fill="none" stroke="#E6ECE4" stroke-width="8" stroke-linecap="round"/>';
-    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="220" height="140" viewBox="0 0 220 140"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#25332A"/><stop offset="1" stop-color="#101719"/></linearGradient><radialGradient id="r"><stop stop-color="#C4F542" stop-opacity=".18"/><stop offset="1" stop-color="#C4F542" stop-opacity="0"/></radialGradient></defs><rect width="220" height="140" rx="15" fill="url(#g)"/><circle cx="174" cy="32" r="70" fill="url(#r)"/><path d="M12 119H208" stroke="#405044" stroke-width="1" stroke-dasharray="3 5"/>'+gear+person+'<text x="14" y="130" fill="#91A18D" font-size="8" font-family="Arial,sans-serif" letter-spacing="1.4">RANLIAN · MOVE</text></svg>';
+    var kind=coverKind(a), muscles=coverMuscles(a,kind), title=String(a.title||"训练动作").replace(/[<>&\"']/g,"").slice(0,16);
+    var active=function(m){return muscles.indexOf(m)>=0;};
+    var skin="#9CA4A8", shade="#596267", red="#F04452", line="#BAC1C4";
+    function figure(x,pose,back){
+      var squat=pose==="low", armsUp=kind==="stretch"||kind==="pull", push=kind==="push", core=kind==="core";
+      var torso=back?"M-13 43 Q-18 54 -15 75 L-11 93 Q0 101 11 93 L15 75 Q18 54 13 43 Q0 36 -13 43Z":"M-13 43 Q-18 54 -15 75 L-11 93 Q0 101 11 93 L15 75 Q18 54 13 43 Q0 36 -13 43Z";
+      var arms=armsUp?"M-12 49 L-25 37 L-30 15 M12 49 L25 37 L30 15":push?"M-12 49 L-28 58 L-36 72 M12 49 L28 58 L36 72":"M-12 49 L-25 64 L-27 82 M12 49 L25 64 L27 82";
+      var legs=squat?"M-9 91 L-20 111 L-35 116 L-39 126 M9 91 L20 111 L35 116 L39 126":"M-9 91 L-13 116 L-14 139 M9 91 L13 116 L14 139";
+      var highlights="";
+      if(active("chest"))highlights+='<path d="M-12 53 Q-3 47 0 58 Q-7 67 -13 62Z M12 53 Q3 47 0 58 Q7 67 13 62Z"/>';
+      if(active("back"))highlights+='<path d="M-12 49 Q-3 45 0 57 L-7 77 L-14 69Z M12 49 Q3 45 0 57 L7 77 L14 69Z"/>';
+      if(active("shoulder"))highlights+='<ellipse cx="-14" cy="50" rx="6" ry="7"/><ellipse cx="14" cy="50" rx="6" ry="7"/>';
+      if(active("biceps"))highlights+='<path d="M-23 60 Q-29 62 -27 73 L-22 78 L-18 66Z M23 60 Q29 62 27 73 L22 78 L18 66Z"/>';
+      if(active("triceps"))highlights+='<path d="M-29 61 L-25 58 L-20 72 L-24 78Z M29 61 L25 58 L20 72 L24 78Z"/>';
+      if(active("core"))highlights+='<path d="M-7 63 Q0 59 7 63 L6 87 Q0 91 -6 87Z"/>';
+      if(active("quad"))highlights+='<path d="M-10 94 L-17 111 L-14 124 L-7 117 L-5 96Z M10 94 L17 111 L14 124 L7 117 L5 96Z"/>';
+      if(active("ham"))highlights+='<path d="M-10 96 L-17 111 L-14 123 L-8 116Z M10 96 L17 111 L14 123 L8 116Z"/>';
+      if(active("glute"))highlights+='<path d="M-11 84 Q-6 78 0 86 Q6 78 11 84 L9 96 L-9 96Z"/>';
+      if(active("calf"))highlights+='<path d="M-16 119 L-13 119 L-11 136 L-17 136Z M16 119 L13 119 L11 136 L17 136Z"/>';
+      var equipment="";
+      var eq=(a.equipment||"").toLowerCase();
+      if(/哑铃|dumbbell/.test(eq))equipment='<g fill="#747D82" stroke="#B7BEC1" stroke-width="2"><circle cx="-42" cy="81" r="7"/><circle cx="42" cy="81" r="7"/><path d="M-38 81H-30 M30 81H38" stroke-width="4"/></g>';
+      else if(/杠铃|barbell/.test(eq))equipment='<path d="M-48 73H48 M-43 66V80 M-37 64V82 M37 64V82 M43 66V80" stroke="#AEB6B9" stroke-width="3" stroke-linecap="round"/>';
+      else if(/壶铃|kettlebell/.test(eq))equipment='<g fill="#778186" stroke="#C1C7C9" stroke-width="2"><path d="M27 83 Q25 69 38 69 Q51 69 49 83Z"/><path d="M31 70Q38 59 45 70" fill="none"/></g>';
+      return '<g transform="translate('+x+' 8) scale(1.05)"><ellipse cx="0" cy="145" rx="34" ry="4" fill="#22292D"/><circle cx="0" cy="29" r="10" fill="url(#skin)" stroke="#D0D5D7" stroke-width=".8"/><path d="'+torso+'" fill="url(#body)" stroke="#D0D5D7" stroke-width="1"/><path d="'+arms+'" fill="none" stroke="url(#limb)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="'+legs+'" fill="none" stroke="url(#limb)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><g fill="'+red+'" opacity=".96" stroke="#FF9AA1" stroke-width=".7">'+highlights+'</g><path d="M-5 45Q0 48 5 45 M-7 69H7 M-5 76H5" fill="none" stroke="#697378" stroke-width=".8" opacity=".8"/>'+equipment+'</g>';
+    }
+    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="360" height="210" viewBox="0 0 360 210"><defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#080A0C"/><stop offset="1" stop-color="#111619"/></linearGradient><radialGradient id="skin" cx="35%" cy="25%"><stop stop-color="#E1E5E6"/><stop offset=".55" stop-color="#AAB2B6"/><stop offset="1" stop-color="#596267"/></radialGradient><linearGradient id="body" x1="0" x2="1"><stop stop-color="#596267"/><stop offset=".45" stop-color="#D0D5D7"/><stop offset="1" stop-color="#60696E"/></linearGradient><linearGradient id="limb" x1="0" x2="1"><stop stop-color="#596267"/><stop offset=".5" stop-color="#C9CFD1"/><stop offset="1" stop-color="#596267"/></linearGradient></defs><rect width="360" height="210" rx="14" fill="url(#bg)"/><path d="M180 18V188" stroke="#293236" stroke-dasharray="3 5"/><text x="90" y="18" text-anchor="middle" fill="#8E999D" font-size="9" letter-spacing="1.5">START</text><text x="270" y="18" text-anchor="middle" fill="#8E999D" font-size="9" letter-spacing="1.5">MOVEMENT</text>'+figure(90,"high",false)+figure(270,kind==="legs"||kind==="core"?"low":"high",false)+'<text x="180" y="199" text-anchor="middle" fill="#D9E0E2" font-size="10">'+title+'</text><circle cx="14" cy="14" r="2" fill="#F04452"/></svg>';
     return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
   }
-  function coverFor(a){return a&&a.cover?a.cover:coverSvg(a||{});}
+  function coverFor(a){return coverSvg(a||{});}
 
   /* ---------- 动作库 ---------- */
   var filterPart = "全部", keyword = "";
