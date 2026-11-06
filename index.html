@@ -226,7 +226,7 @@ h2.sec{
   padding:13px 14px;margin-bottom:9px;position:relative;overflow:hidden;
 }
 .tut::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:hsl(var(--h,90) 85% 58%)}
-.tut-top{display:flex;gap:9px;align-items:flex-start}
+.tut-top{display:flex;gap:11px;align-items:center}
 .tut-title{font-size:14.5px;font-weight:600;line-height:1.42;flex:1;word-break:break-word}
 .tut-note{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.6;word-break:break-word;white-space:pre-wrap}
 .tut-foot{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
@@ -362,7 +362,8 @@ details.help[open] summary{color:var(--accent)}
 .catalog-card{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px}
 .catalog-card-top{display:flex;align-items:flex-start;gap:10px}
 .action-cover{width:104px;height:88px;flex:0 0 104px;object-fit:cover;border-radius:10px;border:1px solid var(--line);background:#101719;display:block}
-.tut-cover{width:92px;height:78px;flex:0 0 92px;object-fit:cover;border-radius:10px;border:1px solid var(--line);background:#101719}
+.tut-cover{width:42%;max-width:190px;height:112px;flex:0 0 42%;object-fit:cover;object-position:center;border-radius:10px;border:1px solid var(--line);background:#101719}
+@media(max-width:360px){.tut-cover{width:38%;flex-basis:38%;height:96px}}
 .cover-upload{display:flex;align-items:center;gap:10px;padding:10px;border:1px dashed #46534a;border-radius:12px;background:var(--surf2)}
 .cover-upload img{width:76px;height:64px;object-fit:cover;border-radius:8px;background:#101719}
 .cover-upload .cover-upload-copy{flex:1;min-width:0;font-size:11px;color:var(--muted);line-height:1.5}
@@ -983,95 +984,20 @@ details.help[open] summary{color:var(--accent)}
       + '</div>';
   }
 
-  /* ---------- 动作封面：双姿态肌群示意，纯本地 SVG / 离线可用 ---------- */
-  function coverKind(a){
-    var n=((a.title||"")+" "+(a.en||"")+" "+(a.guide||"")).toLowerCase();
-    if(/热身|拉伸|活动度|旋转|开合|动态|伸展|mobility|stretch|warm/.test(n))return "stretch";
-    if(/平板|卷腹|举腿|死虫|鸟狗|腹|核心|plank|crunch|dead bug/.test(n))return "core";
-    if(/跑|跳|骑|划船机|椭圆|登山机|战绳|快走|有氧|jump|run|cycle|rowing/.test(n))return "cardio";
-    if(/深蹲|弓步|腿举|腿屈|腿弯|臀桥|提踵|蹬腿|squat|lunge|leg press/.test(n))return "legs";
-    if(/硬拉|划船|下拉|引体|反向飞鸟|deadlift|row|pulldown|pull.?up/.test(n))return "pull";
-    if(/推举|肩推|侧平举|飞鸟|卧推|俯卧撑|臂屈伸|推胸|press|fly|push.?up/.test(n))return "push";
-    if(/弯举|下压|臂屈|curl|triceps|biceps/.test(n))return "arms";
-    return a.part==="热身"?"stretch":a.part==="腿"||a.part==="臀"?"legs":a.part==="背"?"pull":a.part==="胸"||a.part==="肩"?"push":a.part==="核心"?"core":a.part==="有氧"?"cardio":"general";
-  }
-  function coverMuscles(a,kind){
-    var n=((a.title||"")+" "+(a.en||"")+" "+(a.guide||"")).toLowerCase(), p=a.part||"";
-    if(/臀桥|臀推|髋推|蚌式|kick.?back|glute/.test(n))return ["glute"];
-    if(/腿弯举|腘绳|腿后|hamstring/.test(n))return ["ham"];
-    if(/腿屈伸|股四|leg extension/.test(n))return ["quad"];
-    if(/提踵|小腿|calf/.test(n))return ["calf"];
-    if(/硬拉|罗马尼亚|早安式|good morning/.test(n))return ["ham","glute","back"];
-    if(/深蹲|弓步|腿举|蹬腿|squat|lunge|leg press/.test(n))return ["quad","glute"];
-    if(/卷腹|仰卧起坐|平板|举腿|死虫|俄罗斯转体|腹/.test(n))return ["core"];
-    if(/划船|下拉|引体|面拉|反向飞鸟|row|pulldown|pull.?up/.test(n))return ["back","biceps"];
-    if(/弯举|二头|biceps|curl/.test(n))return ["biceps"];
-    if(/下压|臂屈伸|三头|triceps/.test(n))return ["triceps"];
-    if(/侧平举|推举|肩推|肩部|deltoid|lateral raise|overhead press/.test(n)||p==="肩")return ["shoulder"];
-    if(/卧推|俯卧撑|飞鸟|推胸|夹胸|胸/.test(n)||p==="胸")return ["chest","triceps"];
-    if(p==="背")return ["back","biceps"];
-    if(p==="腿")return ["quad","ham"];
-    if(p==="臀")return ["glute"];
-    if(p==="核心")return ["core"];
-    if(p==="手臂")return ["biceps","triceps"];
-    if(p==="热身"||p==="有氧"||p==="全身")return ["shoulder","chest","quad","core"];
-    return kind==="legs"?["quad","glute"]:kind==="pull"?["back","biceps"]:kind==="push"?["chest","triceps"]:kind==="core"?["core"]:["shoulder"];
-  }
+  /* ---------- 动作图片：真实训练姿势 + 目标肌群 3D 图 ---------- */
   function coverSvg(a){
-    var kind=coverKind(a), muscles=coverMuscles(a,kind), title=String(a.title||"训练动作").replace(/[<>&\"']/g,"").slice(0,16);
-    var active=function(m){return muscles.indexOf(m)>=0;};
-    var skin="#9CA4A8", shade="#596267", red="#F04452", line="#BAC1C4";
-    function figure(x,pose,back){
-      var squat=pose==="low", armsUp=kind==="stretch"||kind==="pull", push=kind==="push", core=kind==="core";
-      var torso=back?"M-13 43 Q-18 54 -15 75 L-11 93 Q0 101 11 93 L15 75 Q18 54 13 43 Q0 36 -13 43Z":"M-13 43 Q-18 54 -15 75 L-11 93 Q0 101 11 93 L15 75 Q18 54 13 43 Q0 36 -13 43Z";
-      var arms=armsUp?"M-12 49 L-25 37 L-30 15 M12 49 L25 37 L30 15":push?"M-12 49 L-28 58 L-36 72 M12 49 L28 58 L36 72":"M-12 49 L-25 64 L-27 82 M12 49 L25 64 L27 82";
-      var legs=squat?"M-9 91 L-20 111 L-35 116 L-39 126 M9 91 L20 111 L35 116 L39 126":"M-9 91 L-13 116 L-14 139 M9 91 L13 116 L14 139";
-      var highlights="";
-      if(active("chest"))highlights+='<path d="M-12 53 Q-3 47 0 58 Q-7 67 -13 62Z M12 53 Q3 47 0 58 Q7 67 13 62Z"/>';
-      if(active("back"))highlights+='<path d="M-12 49 Q-3 45 0 57 L-7 77 L-14 69Z M12 49 Q3 45 0 57 L7 77 L14 69Z"/>';
-      if(active("shoulder"))highlights+='<ellipse cx="-14" cy="50" rx="6" ry="7"/><ellipse cx="14" cy="50" rx="6" ry="7"/>';
-      if(active("biceps"))highlights+='<path d="M-23 60 Q-29 62 -27 73 L-22 78 L-18 66Z M23 60 Q29 62 27 73 L22 78 L18 66Z"/>';
-      if(active("triceps"))highlights+='<path d="M-29 61 L-25 58 L-20 72 L-24 78Z M29 61 L25 58 L20 72 L24 78Z"/>';
-      if(active("core"))highlights+='<path d="M-7 63 Q0 59 7 63 L6 87 Q0 91 -6 87Z"/>';
-      if(active("quad"))highlights+='<path d="M-10 94 L-17 111 L-14 124 L-7 117 L-5 96Z M10 94 L17 111 L14 124 L7 117 L5 96Z"/>';
-      if(active("ham"))highlights+='<path d="M-10 96 L-17 111 L-14 123 L-8 116Z M10 96 L17 111 L14 123 L8 116Z"/>';
-      if(active("glute"))highlights+='<path d="M-11 84 Q-6 78 0 86 Q6 78 11 84 L9 96 L-9 96Z"/>';
-      if(active("calf"))highlights+='<path d="M-16 119 L-13 119 L-11 136 L-17 136Z M16 119 L13 119 L11 136 L17 136Z"/>';
-      var equipment="";
-      var eq=(a.equipment||"").toLowerCase(), titleText=String(a.title||"");
-      var metal='stroke="#9DA8AD" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"';
-      if(/哑铃|dumbbell/.test(eq)){
-        equipment='<g fill="#687278" stroke="#D0D6D8" stroke-width="1.8"><rect x="-48" y="75" width="10" height="13" rx="2"/><rect x="-36" y="78" width="8" height="7" rx="2"/><path d="M-38 81H-28" stroke="#D0D6D8" stroke-width="3"/><rect x="28" y="78" width="8" height="7" rx="2"/><rect x="38" y="75" width="10" height="13" rx="2"/><path d="M28 81H38" stroke="#D0D6D8" stroke-width="3"/></g>';
-        if(/卧推|飞鸟|上斜|平板/.test(titleText)) equipment+='<g '+metal+'><path d="M-29 112L26 112L31 118H-34Z" fill="#303A40"/><path d="M-20 117L-25 139M20 117L25 139"/></g>';
-      }else if(/杠铃|barbell/.test(eq)){
-        equipment='<g '+metal+'><path d="M-52 67H52" stroke-width="4"/><path d="M-48 59V75M-42 56V78M42 56V78M48 59V75" stroke-width="4"/>';
-        if(/深蹲|卧推|架/.test(titleText))equipment+='<path d="M-57 20V143M57 20V143M-57 34H-42M42 34H57M-57 70H-42M42 70H57" stroke-width="4"/>';
-        equipment+='</g>';
-      }else if(/壶铃|kettlebell/.test(eq)){
-        equipment='<g fill="#778186" stroke="#C1C7C9" stroke-width="2"><path d="M27 83Q25 69 38 69Q51 69 49 83Z"/><path d="M31 70Q38 59 45 70" fill="none"/></g>';
-      }else if(/固定器械/.test(eq)){
-        if(/推胸|胸推/.test(titleText)){
-          equipment='<g '+metal+'><path d="M-55 18V143M55 18V143M-55 22H-35M35 22H55M-48 34V93M48 34V93" stroke-width="4"/><path d="M-47 88L-24 88M47 88L24 88" stroke-width="5"/><path d="M-18 107H18V119H-18Z" fill="#303A40"/><path d="M-14 119V139M14 119V139"/></g>';
-        }else if(/腿举/.test(titleText)){
-          equipment='<g '+metal+'><path d="M-54 22V139M-54 22L-15 22M-50 35L40 100" stroke-width="5"/><path d="M-4 84L48 84L48 104L-4 104Z" fill="#39444A"/><path d="M-42 139H49"/></g>';
-        }else if(/腿屈伸|腿弯举/.test(titleText)){
-          equipment='<g '+metal+'><path d="M-35 73H35V88H-35Z" fill="#303A40"/><path d="M-28 88V134M28 88V134M-28 112H28" stroke-width="5"/><circle cx="0" cy="72" r="7" fill="#657078"/></g>';
-        }else{
-          equipment='<g '+metal+'><path d="M-53 18V143M53 18V143M-53 22H53M-42 22V48M42 22V48M-53 137H53" stroke-width="4"/><path d="M-36 47H36" stroke-width="4"/><circle cx="-36" cy="47" r="4" fill="#AAB4B8"/><circle cx="36" cy="47" r="4" fill="#AAB4B8"/></g>';
-        }
-      }else if(/龙门架|绳索|cable/.test(eq)){
-        equipment='<g '+metal+'><path d="M-56 15V144M56 15V144M-56 20H56M-56 140H56" stroke-width="4"/><circle cx="0" cy="24" r="5" fill="#AAB4B8"/><path d="M0 29L0 49L-22 70" stroke-width="2"/><path d="M-29 68L-15 72" stroke-width="3"/></g>';
-      }else if(/弹力带/.test(eq)){
-        equipment='<path d="M-31 68Q0 112 31 68" fill="none" stroke="#C4F542" stroke-width="4" stroke-dasharray="4 3"/>';
-      }else if(/自重|徒手/.test(eq)){
-        equipment="";
-      }
-      return '<g transform="translate('+x+' 8) scale(1.05)"><ellipse cx="0" cy="145" rx="34" ry="4" fill="#22292D"/><circle cx="0" cy="29" r="10" fill="url(#skin)" stroke="#D0D5D7" stroke-width=".8"/><path d="'+torso+'" fill="url(#body)" stroke="#D0D5D7" stroke-width="1"/><path d="'+arms+'" fill="none" stroke="url(#limb)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="'+legs+'" fill="none" stroke="url(#limb)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><g fill="'+red+'" opacity=".96" stroke="#FF9AA1" stroke-width=".7">'+highlights+'</g><path d="M-5 45Q0 48 5 45 M-7 69H7 M-5 76H5" fill="none" stroke="#697378" stroke-width=".8" opacity=".8"/>'+equipment+'</g>';
-    }
-    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="360" height="210" viewBox="0 0 360 210"><defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#080A0C"/><stop offset="1" stop-color="#111619"/></linearGradient><radialGradient id="skin" cx="35%" cy="25%"><stop stop-color="#E1E5E6"/><stop offset=".55" stop-color="#AAB2B6"/><stop offset="1" stop-color="#596267"/></radialGradient><linearGradient id="body" x1="0" x2="1"><stop stop-color="#596267"/><stop offset=".45" stop-color="#D0D5D7"/><stop offset="1" stop-color="#60696E"/></linearGradient><linearGradient id="limb" x1="0" x2="1"><stop stop-color="#596267"/><stop offset=".5" stop-color="#C9CFD1"/><stop offset="1" stop-color="#596267"/></linearGradient></defs><rect width="360" height="210" rx="14" fill="url(#bg)"/><path d="M180 18V188" stroke="#293236" stroke-dasharray="3 5"/><text x="90" y="18" text-anchor="middle" fill="#8E999D" font-size="9" letter-spacing="1.5">START</text><text x="270" y="18" text-anchor="middle" fill="#8E999D" font-size="9" letter-spacing="1.5">MOVEMENT</text>'+figure(90,"high",false)+figure(270,kind==="legs"||kind==="core"?"low":"high",false)+'<text x="180" y="199" text-anchor="middle" fill="#D9E0E2" font-size="10">'+title+'</text><circle cx="14" cy="14" r="2" fill="#F04452"/></svg>';
-    return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
+    var label=String((a&&a.title)||"动作图片").replace(/[<>&"']/g,"").slice(0,18);
+    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="640" height="240" viewBox="0 0 640 240"><defs><linearGradient id="g" x2="0" y2="1"><stop stop-color="#171E21"/><stop offset="1" stop-color="#080A0B"/></linearGradient></defs><rect width="640" height="240" rx="18" fill="url(#g)"/><rect x="1" y="1" width="638" height="238" rx="17" fill="none" stroke="#354044"/><text x="320" y="108" text-anchor="middle" fill="#C4F542" font-size="25" font-family="sans-serif">3D 动作素材待补充</text><text x="320" y="151" text-anchor="middle" fill="#AAB4B8" font-size="17" font-family="sans-serif">'+label+'</text></svg>';
+    return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
   }
-  function coverFor(a){return coverSvg(a||{});}
+  function coverFor(a){
+    var n=((a&&a.title)||'')+' '+((a&&a.equipment)||'')+' '+((a&&a.guide)||'');
+    if(/高位下拉|宽握下拉|窄握下拉|lat\s*pull/.test(n))return './assets/lat-pulldown.jpg';
+    if(/杠铃深蹲|深蹲架|barbell\s*squat/.test(n))return './assets/barbell-squat.jpg';
+    if(/上斜哑铃推举|上斜哑铃卧推|上斜卧推/.test(n))return './assets/incline-dumbbell-press.jpg';
+    if(/绳索夹胸|绳索飞鸟|龙门架夹胸|cable\s*fly/.test(n))return './assets/cable-fly.jpg';
+    return coverSvg(a||{});
+  }
 
   /* ---------- 动作库 ---------- */
   var filterPart = "全部", keyword = "";
